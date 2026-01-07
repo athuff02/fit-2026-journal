@@ -309,6 +309,35 @@ function renderWeeklySummary() {
 let journalEntries = [];
 
 function initializeApp() {
+    const legacyEntries = localStorage.getItem('north_star_entries');
+    if (legacyEntries) {
+        try {
+            const parsedEntries = JSON.parse(legacyEntries);
+            if (Array.isArray(parsedEntries) && parsedEntries.length > 0) {
+                const transaction = db.transaction(["entries"], "readwrite");
+                const store = transaction.objectStore("entries");
+                parsedEntries.forEach(entry => {
+                    if (!entry.createdAt) {
+                        entry.createdAt = new Date(entry.date).toISOString() + Math.random();
+                    }
+                    store.add(entry);
+                });
+                transaction.oncomplete = () => {
+                    localStorage.removeItem('north_star_entries');
+                    alert('Your journal entries have been upgraded to a new format for better performance. The page will now reload.');
+                    location.reload();
+                };
+                transaction.onerror = (e) => {
+                    console.error('Error migrating legacy entries:', e.target.error);
+                }
+                return;
+            }
+        } catch (e) {
+            console.error('Error parsing or migrating legacy entries:', e);
+            localStorage.removeItem('north_star_entries');
+        }
+    }
+
     getDBEntries(entries => {
         journalEntries = entries; // Make entries available globally
         window.journalEntries = entries;
