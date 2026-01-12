@@ -110,6 +110,7 @@ document.getElementById("scriptureDisplay").textContent =
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 const exportBtn = document.getElementById("exportBtn");
+const exportAllBtn = document.getElementById("exportAllBtn");
 
 
 /* ================= TABS ================= */
@@ -249,6 +250,53 @@ ${entry.actionItem}
   link.download = `fit-2026_${entry.date}_${entry.theme.replace(/\W+/g,"_").toLowerCase()}.txt`;
   link.click();
 }
+
+function escapeCsv(field) {
+  if (field === null || field === undefined) {
+    return "";
+  }
+  const stringField = String(field);
+  if (stringField.includes(",") || stringField.includes("\n") || stringField.includes('"')) {
+    return `"${stringField.replace(/"/g, '""')}"`;
+  }
+  return stringField;
+}
+
+function exportAllCsv() {
+  if (!window.journalEntries || window.journalEntries.length === 0) {
+    return alert("No entries to export.");
+  }
+
+  const header = ["Date", "Theme", "Question 1", "Question 2", "Question 3", "Question 4", "Question 5", "Action Item", "Created At"];
+  const rows = [header.join(",")];
+
+  window.journalEntries.forEach(entry => {
+    const row = [
+      escapeCsv(entry.date),
+      escapeCsv(entry.theme),
+      escapeCsv(entry.responses.q1),
+      escapeCsv(entry.responses.q2),
+      escapeCsv(entry.responses.q3),
+      escapeCsv(entry.responses.q4),
+      escapeCsv(entry.responses.q5),
+      escapeCsv(entry.actionItem),
+      escapeCsv(entry.createdAt)
+    ];
+    rows.push(row.join(","));
+  });
+
+  const csvContent = rows.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+
+  const todayStr = new Date().toISOString().split("T")[0];
+  link.download = `fit-2026_full_export_${todayStr}.csv`;
+  link.click();
+}
+
+exportAllBtn.onclick = exportAllCsv;
+
 /* ================= WEEKLY SUMMARY CARD ================= */
 function renderWeeklySummary() {
   const now = new Date();
