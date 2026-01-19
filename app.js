@@ -123,6 +123,7 @@ historyTab.onclick = () => {
   historyView.classList.remove("hidden");
   dailyView.classList.add("hidden");
   renderHistory();
+  renderStats();
 };
 
 /* ================= SAVE ================= */
@@ -297,8 +298,16 @@ function exportAllCsv() {
 
 exportAllBtn.onclick = exportAllCsv;
 
-/* ================= WEEKLY SUMMARY CARD ================= */
-function renderWeeklySummary() {
+/* ================= SUMMARY STATS ================= */
+function renderStats() {
+  const container = document.getElementById("statsContainer");
+  if (!container) return;
+  container.innerHTML = "";
+  renderWeeklySummary(container);
+  renderMonthlySummary(container);
+}
+
+function renderWeeklySummary(container) {
   const now = new Date();
   const weekAgo = new Date();
   weekAgo.setDate(now.getDate() - 6);
@@ -347,10 +356,66 @@ function renderWeeklySummary() {
       li.textContent = a;
       ul.appendChild(li);
   });
+  container.appendChild(div);
+}
+
+function renderMonthlySummary(container) {
+  const entries = window.journalEntries || [];
+  if (entries.length === 0) return;
+
+  // Group by Month (YYYY-MM)
+  const stats = {};
+  entries.forEach(e => {
+    // e.date is YYYY-MM-DD
+    const monthKey = e.date.substring(0, 7); // YYYY-MM
+    if (!stats[monthKey]) {
+      stats[monthKey] = new Set();
+    }
+    stats[monthKey].add(e.date);
+  });
+
+  // Convert to array and sort descending
+  const sortedMonths = Object.keys(stats).sort().reverse();
+
+  if (sortedMonths.length === 0) return;
+
+  const div = document.createElement("div");
+  div.className = "border rounded p-3 bg-white";
+
+  const header = document.createElement('p');
+  header.className = "font-medium text-sm mb-2";
+  header.textContent = "Monthly Consistency";
+  div.appendChild(header);
+
+  const ul = document.createElement('ul');
+  ul.className = "space-y-1";
+
+  sortedMonths.forEach(key => {
+    // key is YYYY-MM
+    const count = stats[key].size;
+    const [year, month] = key.split('-');
+    // Create date object to get localized month name.
+    // Note: using local time might shift dates, but month name should be fine if we set day to 15.
+    const dateObj = new Date(parseInt(year), parseInt(month) - 1, 15);
+    const monthName = dateObj.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+    const li = document.createElement('li');
+    li.className = "text-sm flex justify-between";
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = monthName;
+
+    const countSpan = document.createElement('span');
+    countSpan.className = "font-medium";
+    countSpan.textContent = `${count} day${count === 1 ? '' : 's'}`;
+
+    li.appendChild(nameSpan);
+    li.appendChild(countSpan);
+    ul.appendChild(li);
+  });
+
   div.appendChild(ul);
-
-
-  historyList.appendChild(div);
+  container.appendChild(div);
 }
 
 /* ================= APP START ================= */
@@ -391,7 +456,7 @@ function initializeApp() {
         window.journalEntries = entries;
         document.getElementById("streakDisplay").textContent =
             `Current Streak: ${calculateStreak(journalEntries)} day${calculateStreak(journalEntries) === 1 ? "" : "s"}`;
-        renderWeeklySummary(); // Now call this
+        renderStats(); // Now call this
     });
 }
 
