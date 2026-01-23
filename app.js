@@ -78,26 +78,41 @@ function sanitize(str) {
 }
 
 const today = new Date();
-const todayISO = today.toISOString().split("T")[0];
+
+function getLocalISOString(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+const todayISO = getLocalISOString(today);
 
 const formatDate = d => d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
 
 function getTodayTheme() {
-  const diff = Math.floor((today - ANCHOR_DATE) / 86400000);
-  return THEMES[diff % THEMES.length];
+    const anchor = new Date("2026-01-01"); // UTC Midnight
+    const current = new Date(todayISO); // UTC Midnight
+    const diff = Math.floor((current - anchor) / 86400000);
+    // JS % can be negative
+    const index = ((diff % THEMES.length) + THEMES.length) % THEMES.length;
+    return THEMES[index];
 }
 
 /* ================= STREAK ================= */
 function calculateStreak(entries) {
-  const days = [...new Set(entries.map(e => e.date))].sort().reverse();
+  const days = new Set(entries.map(e => e.date));
   let streak = 0;
-  let check = new Date(todayISO);
+  let check = new Date(todayISO); // UTC Midnight
 
-  for (let d of days) {
-    if (d === check.toISOString().split("T")[0]) {
+  while (true) {
+    const checkString = check.toISOString().split("T")[0];
+    if (days.has(checkString)) {
       streak++;
-      check.setDate(check.getDate() - 1);
-    } else break;
+      check.setUTCDate(check.getUTCDate() - 1); // Go back 1 day UTC
+    } else {
+      break;
+    }
   }
   return streak;
 }
@@ -291,8 +306,7 @@ function exportAllCsv() {
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
 
-  const todayStr = new Date().toISOString().split("T")[0];
-  link.download = `fit-2026_full_export_${todayStr}.csv`;
+  link.download = `fit-2026_full_export_${todayISO}.csv`;
   link.click();
 }
 
@@ -308,12 +322,12 @@ function renderStats() {
 }
 
 function renderWeeklySummary(container) {
-  const now = new Date();
-  const weekAgo = new Date();
-  weekAgo.setDate(now.getDate() - 6);
+  const cutoffDate = new Date(todayISO);
+  cutoffDate.setUTCDate(cutoffDate.getUTCDate() - 6);
+  const cutoffString = cutoffDate.toISOString().split("T")[0];
 
   const recent = (window.journalEntries || []).filter(e =>
-    new Date(e.date) >= weekAgo
+    e.date >= cutoffString
   );
 
   if (!recent.length) return;
