@@ -46,13 +46,23 @@
   <section id="dailyView">
     <form id="journalForm" class="space-y-4">
 
-        <textarea class="w-full p-3 border rounded" rows="3" placeholder="1. Why does this part of my life matter?" data-question="q1"></textarea>
-        <textarea class="w-full p-3 border rounded" rows="3" placeholder="2. Where do I want to be as far as this theme?" data-question="q2"></textarea>
-        <textarea class="w-full p-3 border rounded" rows="3" placeholder="3. What might I be doing if I cared about this more?" data-question="q3"></textarea>
-        <textarea class="w-full p-3 border rounded" rows="3" placeholder="4. What is one small improvement I can make?" data-question="q4"></textarea>
-        <textarea class="w-full p-3 border rounded" rows="3" placeholder="5. What resistance do I need to overcome?" data-question="q5"></textarea>
+        <label for="q1" class="block text-sm font-medium text-gray-700 mb-1">1. Why does this part of my life matter?</label>
+        <textarea id="q1" class="w-full p-3 border rounded" rows="3" data-question="q1"></textarea>
 
-      <input id="actionItem" type="text" class="w-full p-3 border rounded" placeholder="Action Item" />
+        <label for="q2" class="block text-sm font-medium text-gray-700 mb-1">2. Where do I want to be as far as this theme?</label>
+        <textarea id="q2" class="w-full p-3 border rounded" rows="3" data-question="q2"></textarea>
+
+        <label for="q3" class="block text-sm font-medium text-gray-700 mb-1">3. What might I be doing if I cared about this more?</label>
+        <textarea id="q3" class="w-full p-3 border rounded" rows="3" data-question="q3"></textarea>
+
+        <label for="q4" class="block text-sm font-medium text-gray-700 mb-1">4. What is one small improvement I can make?</label>
+        <textarea id="q4" class="w-full p-3 border rounded" rows="3" data-question="q4"></textarea>
+
+        <label for="q5" class="block text-sm font-medium text-gray-700 mb-1">5. What resistance do I need to overcome?</label>
+        <textarea id="q5" class="w-full p-3 border rounded" rows="3" data-question="q5"></textarea>
+
+      <label for="actionItem" class="block text-sm font-medium text-gray-700 mb-1">Action Item</label>
+      <input id="actionItem" type="text" class="w-full p-3 border rounded" />
 
       <p class="text-sm text-gray-500 italic text-center">
         Now, pray God will bless your efforts in this area.
