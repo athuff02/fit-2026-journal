@@ -96,12 +96,12 @@
 </div>
 
 <!-- MODAL -->
-<div id="modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4">
+<div id="modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="bg-white rounded p-4 max-w-md w-full space-y-3">
     <div id="modalContent"></div>
     <div class="flex gap-2">
       <button id="exportBtn" class="border px-3 py-2 rounded text-sm">Export .txt</button>
-      <button onclick="closeModal()" class="ml-auto text-sm text-gray-500">Close</button>
+      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-500">Close</button>
     </div>
   </div>
 </div>

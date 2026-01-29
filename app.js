@@ -126,6 +126,7 @@ const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 const exportBtn = document.getElementById("exportBtn");
 const exportAllBtn = document.getElementById("exportAllBtn");
+let lastFocusedElement = null;
 
 
 /* ================= TABS ================= */
@@ -199,12 +200,14 @@ function renderHistory() {
 
 /* ================= MODAL ================= */
 function openModal(entry) {
+  lastFocusedElement = document.activeElement;
   modal.classList.remove("hidden");
   modalContent.innerHTML = ''; // Clear previous content
 
   // Header
   const header = document.createElement('p');
   header.className = "font-medium";
+  header.id = "modalTitle";
   header.textContent = `${entry.date} — ${entry.theme}`;
   modalContent.appendChild(header);
 
@@ -236,11 +239,23 @@ function openModal(entry) {
 
 
   exportBtn.onclick = () => exportTxt(entry);
+
+  const closeBtn = document.getElementById("closeModalBtn");
+  if (closeBtn) closeBtn.focus();
 }
 
 function closeModal() {
   modal.classList.add("hidden");
+  if (lastFocusedElement) {
+    lastFocusedElement.focus();
+  }
 }
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+    closeModal();
+  }
+});
 
 
 /* ================= EXPORT ================= */
