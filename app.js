@@ -195,9 +195,30 @@ themeFilter.onchange = renderHistory;
 
 function renderHistory() {
   historyList.innerHTML = "";
-  (window.journalEntries || [])
-    .filter(e => themeFilter.value === "all" || e.theme === themeFilter.value)
-    .forEach(e => {
+  const entries = window.journalEntries || [];
+  const filter = themeFilter.value;
+
+  const filtered = entries.filter(e => filter === "all" || e.theme === filter);
+
+  if (filtered.length === 0) {
+    const emptyState = document.createElement("div");
+    emptyState.className = "text-center py-8 text-gray-500";
+
+    const p = document.createElement("p");
+    p.className = "text-sm";
+
+    if (filter === "all") {
+      p.textContent = "No entries yet. Start your journey in the Daily Focus tab!";
+    } else {
+      p.textContent = `No entries found for "${filter}".`;
+    }
+
+    emptyState.appendChild(p);
+    historyList.appendChild(emptyState);
+    return;
+  }
+
+  filtered.forEach(e => {
       const div = document.createElement("div");
       div.className = "border p-3 rounded bg-white cursor-pointer";
 
