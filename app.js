@@ -133,11 +133,24 @@ let lastFocusedElement = null;
 dailyTab.onclick = () => {
   dailyView.classList.remove("hidden");
   historyView.classList.add("hidden");
+
+  dailyTab.classList.add("border-b-2", "border-gray-900", "text-gray-900");
+  dailyTab.classList.remove("text-gray-400");
+
+  historyTab.classList.remove("border-b-2", "border-gray-900", "text-gray-900");
+  historyTab.classList.add("text-gray-400");
 };
 
 historyTab.onclick = () => {
   historyView.classList.remove("hidden");
   dailyView.classList.add("hidden");
+
+  historyTab.classList.add("border-b-2", "border-gray-900", "text-gray-900");
+  historyTab.classList.remove("text-gray-400");
+
+  dailyTab.classList.remove("border-b-2", "border-gray-900", "text-gray-900");
+  dailyTab.classList.add("text-gray-400");
+
   renderHistory();
   renderStats();
 };
@@ -192,6 +205,13 @@ function renderHistory() {
       p.className = "text-sm font-medium";
       p.textContent = `${e.date} — ${e.theme}`;
       div.appendChild(p);
+
+      if (e.actionItem) {
+        const action = document.createElement('p');
+        action.className = "text-xs text-gray-500 mt-1 truncate";
+        action.textContent = `Action: ${e.actionItem}`;
+        div.appendChild(action);
+      }
 
       div.onclick = () => openModal(e);
       historyList.appendChild(div);
