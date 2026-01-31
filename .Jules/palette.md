@@ -9,3 +9,7 @@
 ## 2026-01-30 - Empty State Guidance
 **Learning:** Empty lists in the 'History' view caused confusion, appearing broken or loading indefinitely. A blank state provides no direction.
 **Action:** Always implement a friendly empty state for lists, distinguishing between "no data ever" (onboarding opportunity) and "no matching data" (filter feedback).
+
+## 2026-01-31 - Div Buttons Anti-Pattern
+**Learning:** The History list items were implemented as `div`s with `onclick`, making them invisible to keyboard navigation. This blocks core functionality for keyboard users.
+**Action:** Always use `<button>` for interactive elements, or if `div` is necessary for layout, ensure `role="button"`, `tabindex="0"`, and `onkeydown` (Enter/Space) are implemented.
