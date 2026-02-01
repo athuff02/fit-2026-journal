@@ -34,10 +34,10 @@
 
   <!-- Tabs -->
   <nav class="flex justify-center gap-4 mb-6">
-    <button id="dailyTab" class="border-b-2 border-gray-900 pb-1 text-sm font-medium">
+    <button id="dailyTab" class="border-b-2 border-gray-900 pb-1 text-sm font-medium focus:outline-none focus:bg-gray-100 rounded-t px-2 transition-colors">
       Daily Focus
     </button>
-    <button id="historyTab" class="pb-1 text-sm font-medium text-gray-400">
+    <button id="historyTab" class="pb-1 text-sm font-medium text-gray-400 focus:outline-none focus:bg-gray-100 rounded-t px-2 transition-colors">
       History
     </button>
   </nav>
@@ -47,32 +47,32 @@
     <form id="journalForm" class="space-y-4">
 
         <label for="q1" class="block text-sm font-medium text-gray-700 mb-1">1. Why does this part of my life matter?</label>
-        <textarea id="q1" class="w-full p-3 border rounded" rows="3" data-question="q1"></textarea>
+        <textarea id="q1" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q1"></textarea>
 
         <label for="q2" class="block text-sm font-medium text-gray-700 mb-1">2. Where do I want to be as far as this theme?</label>
-        <textarea id="q2" class="w-full p-3 border rounded" rows="3" data-question="q2"></textarea>
+        <textarea id="q2" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q2"></textarea>
 
         <label for="q3" class="block text-sm font-medium text-gray-700 mb-1">3. What might I be doing if I cared about this more?</label>
-        <textarea id="q3" class="w-full p-3 border rounded" rows="3" data-question="q3"></textarea>
+        <textarea id="q3" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q3"></textarea>
 
         <label for="q4" class="block text-sm font-medium text-gray-700 mb-1">4. What is one small improvement I can make?</label>
-        <textarea id="q4" class="w-full p-3 border rounded" rows="3" data-question="q4"></textarea>
+        <textarea id="q4" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q4"></textarea>
 
         <label for="q5" class="block text-sm font-medium text-gray-700 mb-1">5. What resistance do I need to overcome?</label>
-        <textarea id="q5" class="w-full p-3 border rounded" rows="3" data-question="q5"></textarea>
+        <textarea id="q5" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q5"></textarea>
 
       <label for="actionItem" class="block text-sm font-medium text-gray-700 mb-1">Action Item</label>
-      <input id="actionItem" type="text" class="w-full p-3 border rounded" />
+      <input id="actionItem" type="text" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" />
 
       <p class="text-sm text-gray-500 italic text-center">
         Now, pray God will bless your efforts in this area.
       </p>
 
-      <button class="bg-gray-900 text-white py-3 rounded w-full text-sm font-medium">
+      <button class="bg-gray-900 text-white py-3 rounded w-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
         Save Entry
       </button>
 
-      <button type="button" id="calendarBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium">
+      <button type="button" id="calendarBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
         Add Action Item to Calendar
       </button>
 
@@ -82,13 +82,13 @@
   <!-- HISTORY VIEW -->
   <section id="historyView" class="hidden">
     <div id="statsContainer" class="mb-4 space-y-4"></div>
-    <select id="themeFilter" class="w-full p-2 border rounded mb-4 text-sm">
+    <select id="themeFilter" class="w-full p-2 border rounded mb-4 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow">
       <option value="all">All Themes</option>
     </select>
 
     <div id="historyList" class="space-y-4"></div>
 
-    <button id="exportAllBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium mt-4">
+    <button id="exportAllBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium mt-4 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
       Export All to CSV
     </button>
   </section>
@@ -100,8 +100,8 @@
   <div class="bg-white rounded p-4 max-w-md w-full space-y-3">
     <div id="modalContent"></div>
     <div class="flex gap-2">
-      <button id="exportBtn" class="border px-3 py-2 rounded text-sm">Export .txt</button>
-      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-500">Close</button>
+      <button id="exportBtn" class="border px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">Export .txt</button>
+      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-500 rounded px-2 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">Close</button>
     </div>
   </div>
 </div>
