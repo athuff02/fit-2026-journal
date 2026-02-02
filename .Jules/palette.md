@@ -13,3 +13,7 @@
 ## 2026-01-31 - Div Buttons Anti-Pattern
 **Learning:** The History list items were implemented as `div`s with `onclick`, making them invisible to keyboard navigation. This blocks core functionality for keyboard users.
 **Action:** Always use `<button>` for interactive elements, or if `div` is necessary for layout, ensure `role="button"`, `tabindex="0"`, and `onkeydown` (Enter/Space) are implemented.
+
+## 2026-02-01 - Blocking Alerts vs Inline Feedback
+**Learning:** Using `alert()` for save confirmation disrupts the user flow and feels dated. It blocks interaction until dismissed.
+**Action:** Replace blocking alerts with inline button feedback (loading state -> success state) to provide a smoother, more modern experience while preventing double-submission.
