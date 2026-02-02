@@ -219,23 +219,23 @@ function renderHistory() {
   }
 
   filtered.forEach(e => {
-      const div = document.createElement("div");
-      div.className = "border p-3 rounded bg-white cursor-pointer";
+      const btn = document.createElement("button");
+      btn.className = "w-full text-left border p-3 rounded bg-white transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2";
 
       const p = document.createElement('p');
       p.className = "text-sm font-medium";
       p.textContent = `${e.date} — ${e.theme}`;
-      div.appendChild(p);
+      btn.appendChild(p);
 
       if (e.actionItem) {
         const action = document.createElement('p');
         action.className = "text-xs text-gray-500 mt-1 truncate";
         action.textContent = `Action: ${e.actionItem}`;
-        div.appendChild(action);
+        btn.appendChild(action);
       }
 
-      div.onclick = () => openModal(e);
-      historyList.appendChild(div);
+      btn.onclick = () => openModal(e);
+      historyList.appendChild(btn);
     });
 }
 
