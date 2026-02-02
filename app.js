@@ -170,9 +170,17 @@ journalForm.onsubmit = e => {
     createdAt: new Date().toISOString()
   };
 
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true;
+  btn.textContent = "Saving...";
+
   addEntry(newEntry, () => {
-    alert("Entry saved.");
-    location.reload();
+    btn.textContent = "Saved!";
+    btn.classList.remove("bg-gray-900");
+    btn.classList.add("bg-green-600", "border-green-600");
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
   });
 };
 
