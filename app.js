@@ -130,30 +130,50 @@ let lastFocusedElement = null;
 
 
 /* ================= TABS ================= */
-dailyTab.onclick = () => {
-  dailyView.classList.remove("hidden");
-  historyView.classList.add("hidden");
+function switchTab(tabId, focus = false) {
+  const isDaily = tabId === 'dailyTab';
 
-  dailyTab.classList.add("border-b-2", "border-gray-900", "text-gray-900");
-  dailyTab.classList.remove("text-gray-400");
+  dailyView.classList.toggle("hidden", !isDaily);
+  historyView.classList.toggle("hidden", isDaily);
 
-  historyTab.classList.remove("border-b-2", "border-gray-900", "text-gray-900");
-  historyTab.classList.add("text-gray-400");
-};
+  const activeClasses = ["border-b-2", "border-gray-900", "text-gray-900"];
+  const inactiveClasses = ["text-gray-400"];
 
-historyTab.onclick = () => {
-  historyView.classList.remove("hidden");
-  dailyView.classList.add("hidden");
+  if (isDaily) {
+    dailyTab.classList.add(...activeClasses);
+    dailyTab.classList.remove(...inactiveClasses);
+    historyTab.classList.remove(...activeClasses);
+    historyTab.classList.add(...inactiveClasses);
+  } else {
+    historyTab.classList.add(...activeClasses);
+    historyTab.classList.remove(...inactiveClasses);
+    dailyTab.classList.remove(...activeClasses);
+    dailyTab.classList.add(...inactiveClasses);
+    renderHistory();
+    renderStats();
+  }
 
-  historyTab.classList.add("border-b-2", "border-gray-900", "text-gray-900");
-  historyTab.classList.remove("text-gray-400");
+  dailyTab.setAttribute("aria-selected", isDaily);
+  dailyTab.setAttribute("tabindex", isDaily ? "0" : "-1");
+  historyTab.setAttribute("aria-selected", !isDaily);
+  historyTab.setAttribute("tabindex", !isDaily ? "0" : "-1");
 
-  dailyTab.classList.remove("border-b-2", "border-gray-900", "text-gray-900");
-  dailyTab.classList.add("text-gray-400");
+  if (focus) document.getElementById(tabId).focus();
+}
 
-  renderHistory();
-  renderStats();
-};
+dailyTab.onclick = () => switchTab('dailyTab');
+historyTab.onclick = () => switchTab('historyTab');
+
+const tabList = document.querySelector('[role="tablist"]');
+if (tabList) {
+  tabList.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const targetId = document.activeElement.id === 'dailyTab' ? 'historyTab' : 'dailyTab';
+      switchTab(targetId, true);
+    }
+  });
+}
 
 /* ================= SAVE ================= */
 journalForm.onsubmit = e => {
