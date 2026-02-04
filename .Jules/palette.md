@@ -17,3 +17,7 @@
 ## 2026-02-01 - Blocking Alerts vs Inline Feedback
 **Learning:** Using `alert()` for save confirmation disrupts the user flow and feels dated. It blocks interaction until dismissed.
 **Action:** Replace blocking alerts with inline button feedback (loading state -> success state) to provide a smoother, more modern experience while preventing double-submission.
+
+## 2026-02-04 - ARIA Tab Pattern
+**Learning:** The previous button-based navigation lacked semantic meaning for assistive technology, making the relationship between tabs and content unclear.
+**Action:** Adopt the standard WAI-ARIA Tab pattern: use `role="tablist/tab/tabpanel"`, manage `aria-selected` and `tabindex` dynamically, and support arrow key navigation.
