@@ -206,7 +206,21 @@ journalForm.onsubmit = e => {
 
 /* ================= CALENDAR ================= */
 calendarBtn.onclick = () => {
-  if (!actionItem.value) return alert("Add an Action Item first.");
+  if (!actionItem.value) {
+    const originalText = "Add Action Item to Calendar";
+    calendarBtn.textContent = "Action Item Required!";
+    calendarBtn.classList.remove("border-gray-900");
+    calendarBtn.classList.add("bg-red-50", "text-red-600", "border-red-600");
+
+    actionItem.focus();
+
+    setTimeout(() => {
+      calendarBtn.textContent = originalText;
+      calendarBtn.classList.remove("bg-red-50", "text-red-600", "border-red-600");
+      calendarBtn.classList.add("border-gray-900");
+    }, 2000);
+    return;
+  }
   window.open(
     `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(actionItem.value)}`,
     "_blank"
