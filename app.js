@@ -530,6 +530,26 @@ function renderMonthlySummary(container) {
   container.appendChild(div);
 }
 
+/* ================= UX ENHANCEMENTS ================= */
+function setupAutoResize() {
+  const textareas = document.querySelectorAll('textarea');
+  textareas.forEach(textarea => {
+    // Store initial height as min-height
+    textarea.style.minHeight = `${textarea.scrollHeight}px`;
+    textarea.style.overflowY = 'hidden';
+
+    const resize = () => {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    };
+
+    textarea.addEventListener('input', resize);
+
+    // Initial resize
+    resize();
+  });
+}
+
 /* ================= APP START ================= */
 let journalEntries = [];
 
@@ -575,4 +595,5 @@ function initializeApp() {
 // Initialize the app after the DOM is loaded and DB is ready
 document.addEventListener('DOMContentLoaded', () => {
     initDB(initializeApp);
+    setupAutoResize();
 });
