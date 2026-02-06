@@ -282,9 +282,33 @@ function renderHistory() {
 }
 
 /* ================= MODAL ================= */
+function trapFocus(e) {
+  const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+  if (!isTabPressed) {
+    return;
+  }
+
+  const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (e.shiftKey) { // if shift key pressed for shift + tab combination
+    if (document.activeElement === firstElement) {
+      lastElement.focus(); // add focus for the last focusable element
+      e.preventDefault();
+    }
+  } else { // if tab key is pressed
+    if (document.activeElement === lastElement) {
+      firstElement.focus(); // add focus for the first focusable element
+      e.preventDefault();
+    }
+  }
+}
+
 function openModal(entry) {
   lastFocusedElement = document.activeElement;
   modal.classList.remove("hidden");
+  modal.addEventListener('keydown', trapFocus);
   modalContent.innerHTML = ''; // Clear previous content
 
   // Header
@@ -329,6 +353,7 @@ function openModal(entry) {
 
 function closeModal() {
   modal.classList.add("hidden");
+  modal.removeEventListener('keydown', trapFocus);
   if (lastFocusedElement) {
     lastFocusedElement.focus();
   }

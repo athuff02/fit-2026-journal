@@ -29,3 +29,7 @@
 ## 2026-02-05 - Auto-expanding Inputs
 **Learning:** Fixed-height textareas with scrollbars create visual friction and hide context when writing long entries.
 **Action:** Implement auto-resizing textareas that grow with content to maintain visibility and improve the writing experience.
+
+## 2026-02-06 - Modal Focus Trapping
+**Learning:** Simply restoring focus on close is not enough; keyboard users can still tab out of an open modal into the background, violating WCAG standards.
+**Action:** Implement a `trapFocus` handler that listens for `Tab`/`Shift+Tab` to cycle focus within the modal boundaries, and attach/detach it with the modal's visibility.
