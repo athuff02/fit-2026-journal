@@ -77,6 +77,16 @@ function sanitize(str) {
   return temp.innerHTML;
 }
 
+function announce(message) {
+  const announcer = document.getElementById("a11y-announcer");
+  if (announcer) {
+    announcer.textContent = message;
+    setTimeout(() => {
+      announcer.textContent = "";
+    }, 3000);
+  }
+}
+
 const today = new Date();
 
 function getLocalISOString(date) {
@@ -137,7 +147,7 @@ function switchTab(tabId, focus = false) {
   historyView.classList.toggle("hidden", isDaily);
 
   const activeClasses = ["border-b-2", "border-gray-900", "text-gray-900"];
-  const inactiveClasses = ["text-gray-400"];
+  const inactiveClasses = ["text-gray-600"];
 
   if (isDaily) {
     dailyTab.classList.add(...activeClasses);
@@ -193,9 +203,11 @@ journalForm.onsubmit = e => {
   const btn = document.getElementById("saveBtn");
   btn.disabled = true;
   btn.textContent = "Saving...";
+  announce("Saving entry...");
 
   addEntry(newEntry, () => {
     btn.textContent = "Saved!";
+    announce("Entry saved successfully. Refreshing page...");
     btn.classList.remove("bg-gray-900");
     btn.classList.add("bg-green-600", "border-green-600");
     setTimeout(() => {
@@ -209,6 +221,7 @@ calendarBtn.onclick = () => {
   if (!actionItem.value) {
     const originalText = "Add Action Item to Calendar";
     calendarBtn.textContent = "Action Item Required!";
+    announce("Action Item Required. Please enter an action item.");
     calendarBtn.classList.remove("border-gray-900");
     calendarBtn.classList.add("bg-red-50", "text-red-600", "border-red-600");
 
@@ -244,7 +257,7 @@ function renderHistory() {
 
   if (filtered.length === 0) {
     const emptyState = document.createElement("div");
-    emptyState.className = "text-center py-8 text-gray-500";
+    emptyState.className = "text-center py-8 text-gray-700";
 
     const p = document.createElement("p");
     p.className = "text-sm";
@@ -271,7 +284,7 @@ function renderHistory() {
 
       if (e.actionItem) {
         const action = document.createElement('p');
-        action.className = "text-xs text-gray-500 mt-1 truncate";
+        action.className = "text-xs text-gray-600 mt-1 truncate";
         action.textContent = `Action: ${e.actionItem}`;
         btn.appendChild(action);
       }
@@ -284,22 +297,28 @@ function renderHistory() {
 /* ================= MODAL ================= */
 function trapFocus(e) {
   const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
-  if (!isTabPressed) {
-    return;
+  if (!isTabPressed) return;
+
+  const focusableElements = modal.querySelectorAll(
+    'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+  );
+
+  if (focusableElements.length === 0) {
+      e.preventDefault();
+      return;
   }
 
-  const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];
 
-  if (e.shiftKey) { // if shift key pressed for shift + tab combination
-    if (document.activeElement === firstElement) {
-      lastElement.focus(); // add focus for the last focusable element
+  if (e.shiftKey) { // Shift + Tab
+    if (document.activeElement === firstElement || !Array.from(focusableElements).includes(document.activeElement)) {
+      lastElement.focus();
       e.preventDefault();
     }
-  } else { // if tab key is pressed
+  } else { // Tab
     if (document.activeElement === lastElement) {
-      firstElement.focus(); // add focus for the first focusable element
+      firstElement.focus();
       e.preventDefault();
     }
   }
@@ -312,15 +331,16 @@ function openModal(entry) {
   modalContent.innerHTML = ''; // Clear previous content
 
   // Header
-  const header = document.createElement('p');
-  header.className = "font-medium";
+  const header = document.createElement('h2');
+  header.className = "font-medium outline-none";
   header.id = "modalTitle";
+  header.tabIndex = -1;
   header.textContent = `${entry.date} — ${entry.theme}`;
   modalContent.appendChild(header);
 
   // Scripture
   const scripture = document.createElement('p');
-  scripture.className = "text-sm italic text-gray-500";
+  scripture.className = "text-sm italic text-gray-700";
   scripture.textContent = `Scripture: ${SCRIPTURES[entry.theme]}`;
   modalContent.appendChild(scripture);
 
@@ -347,8 +367,7 @@ function openModal(entry) {
 
   exportBtn.onclick = () => exportTxt(entry);
 
-  const closeBtn = document.getElementById("closeModalBtn");
-  if (closeBtn) closeBtn.focus();
+  header.focus();
 }
 
 function closeModal() {
