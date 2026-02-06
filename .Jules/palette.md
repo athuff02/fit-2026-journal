@@ -25,3 +25,7 @@
 ## 2026-02-04 - ARIA Tab Pattern
 **Learning:** The previous button-based navigation lacked semantic meaning for assistive technology, making the relationship between tabs and content unclear.
 **Action:** Adopt the standard WAI-ARIA Tab pattern: use `role="tablist/tab/tabpanel"`, manage `aria-selected` and `tabindex` dynamically, and support arrow key navigation.
+
+## 2026-02-05 - Auto-expanding Inputs
+**Learning:** Fixed-height textareas with scrollbars create visual friction and hide context when writing long entries.
+**Action:** Implement auto-resizing textareas that grow with content to maintain visibility and improve the writing experience.
