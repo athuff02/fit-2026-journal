@@ -37,7 +37,7 @@ def test_modal_accessibility(page):
     """ % str(mock_entry).replace("'", '"').replace("False", "false").replace("True", "true"))
 
     # 3. Click History Tab (this calls renderHistory)
-    page.get_by_role("button", name="History").click()
+    page.get_by_role("tab", name="History").click()
 
     # 4. Click the entry to open modal
     # We use a text selector. The format is "Date — Theme"
@@ -58,6 +58,23 @@ def test_modal_accessibility(page):
 
     # 6. Verify Focus moved to Close Button
     close_btn = page.locator("#closeModalBtn")
+    expect(close_btn).to_be_focused()
+
+    # 6b. Verify Focus Trap
+    # Press Tab -> Should loop to Export Button (First element)
+    page.keyboard.press("Tab")
+    expect(page.locator("#exportBtn")).to_be_focused()
+
+    # Press Tab -> Should go back to Close Button
+    page.keyboard.press("Tab")
+    expect(close_btn).to_be_focused()
+
+    # Press Shift+Tab -> Should loop to Export Button
+    page.keyboard.press("Shift+Tab")
+    expect(page.locator("#exportBtn")).to_be_focused()
+
+    # Restore focus to Close button
+    page.keyboard.press("Shift+Tab")
     expect(close_btn).to_be_focused()
 
     # Take screenshot of the open modal
