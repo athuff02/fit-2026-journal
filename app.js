@@ -216,6 +216,13 @@ journalForm.onsubmit = e => {
   });
 };
 
+journalForm.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById("saveBtn").click();
+  }
+});
+
 /* ================= CALENDAR ================= */
 calendarBtn.onclick = () => {
   if (!actionItem.value) {
