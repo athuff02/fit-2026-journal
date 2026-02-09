@@ -33,3 +33,7 @@
 ## 2026-02-06 - Modal Focus Trapping
 **Learning:** Simply restoring focus on close is not enough; keyboard users can still tab out of an open modal into the background, violating WCAG standards.
 **Action:** Implement a `trapFocus` handler that listens for `Tab`/`Shift+Tab` to cycle focus within the modal boundaries, and attach/detach it with the modal's visibility.
+
+## 2026-02-07 - Data Persistence UX
+**Learning:** In long-form input contexts (journaling), relying solely on manual saving risks data loss from accidental navigation or crashes, causing high user frustration.
+**Action:** Implement invisible auto-saving to `localStorage` on input events, restoring state seamlessly on load, and clearing only upon successful submission.

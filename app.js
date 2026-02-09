@@ -19,6 +19,7 @@ const SCRIPTURES = {
   "Reflection/Planning": "Psalm 90:12"
 };
 const STORAGE_KEY = "north_star_entries";
+const DRAFT_KEY = "journal_current_draft";
 const ANCHOR_DATE = new Date("2026-01-01");
 
 /* ================= DATABASE ================= */
@@ -210,6 +211,8 @@ journalForm.onsubmit = e => {
     announce("Entry saved successfully. Refreshing page...");
     btn.classList.remove("bg-gray-900");
     btn.classList.add("bg-green-600", "border-green-600");
+    // Clear draft on successful save
+    if (typeof DRAFT_KEY !== 'undefined') localStorage.removeItem(DRAFT_KEY);
     setTimeout(() => {
       location.reload();
     }, 1000);
@@ -601,6 +604,61 @@ function setupAutoResize() {
   });
 }
 
+/* ================= DRAFTS ================= */
+
+function saveDraft() {
+  const responses = {};
+  document.querySelectorAll("#journalForm textarea").forEach(q => responses[q.id] = q.value);
+  const draft = {
+    responses,
+    actionItem: document.getElementById("actionItem").value,
+    date: todayISO
+  };
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+}
+
+function restoreDraft() {
+  const saved = localStorage.getItem(DRAFT_KEY);
+  if (!saved) return;
+
+  try {
+    const draft = JSON.parse(saved);
+    let hasContent = false;
+
+    if (draft.responses) {
+      Object.entries(draft.responses).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = val;
+            if (val) hasContent = true;
+        }
+      });
+    }
+    if (draft.actionItem) {
+      document.getElementById("actionItem").value = draft.actionItem;
+      hasContent = true;
+    }
+
+    if (hasContent) {
+        // Trigger resize and other listeners
+        document.querySelectorAll('#journalForm textarea').forEach(t => {
+             t.dispatchEvent(new Event('input'));
+        });
+
+        announce("Restored your unsaved draft");
+    }
+
+  } catch (e) {
+    console.error("Error restoring draft", e);
+  }
+}
+
+function setupDrafts() {
+    restoreDraft();
+    const inputs = document.querySelectorAll("#journalForm textarea, #journalForm input");
+    inputs.forEach(el => el.addEventListener("input", saveDraft));
+}
+
 /* ================= APP START ================= */
 let journalEntries = [];
 
@@ -647,4 +705,5 @@ function initializeApp() {
 document.addEventListener('DOMContentLoaded', () => {
     initDB(initializeApp);
     setupAutoResize();
+    setupDrafts();
 });
