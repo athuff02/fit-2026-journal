@@ -54,6 +54,19 @@ function addEntry(entry, callback) {
   }
 }
 
+function deleteEntry(createdAt, callback) {
+  const transaction = db.transaction(["entries"], "readwrite");
+  const store = transaction.objectStore("entries");
+  const request = store.delete(createdAt);
+  request.onsuccess = () => {
+    if (callback) callback();
+  };
+  request.onerror = (e) => {
+    console.error("Error deleting entry:", e);
+    announce("Error deleting entry.");
+  };
+}
+
 function getDBEntries(callback) {
   if (!db) {
     initDB(() => getDBEntries(callback));
@@ -376,6 +389,38 @@ function openModal(entry) {
 
 
   exportBtn.onclick = () => exportTxt(entry);
+
+  // Delete Button Logic
+  const deleteBtn = document.getElementById("deleteBtn");
+  if (deleteBtn) {
+    deleteBtn.classList.remove("hidden");
+    // Reset state
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 hover:bg-red-50 ml-2";
+
+    let confirmDelete = false;
+    deleteBtn.onclick = () => {
+      if (!confirmDelete) {
+          confirmDelete = true;
+          deleteBtn.textContent = "Confirm Delete?";
+          deleteBtn.className = "bg-red-600 text-white px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 ml-2";
+          announce("Press delete again to confirm.");
+      } else {
+          deleteEntry(entry.createdAt, () => {
+              announce("Entry deleted.");
+              // Set focus target for closeModal to use (since button is gone)
+              lastFocusedElement = document.getElementById('themeFilter');
+              closeModal();
+              // Refresh list
+              getDBEntries(entries => {
+                  window.journalEntries = entries;
+                  renderHistory();
+                  renderStats();
+              });
+          });
+      }
+    };
+  }
 
   header.focus();
 }

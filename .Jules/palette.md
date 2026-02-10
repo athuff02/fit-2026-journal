@@ -37,3 +37,7 @@
 ## 2026-02-07 - Data Persistence UX
 **Learning:** In long-form input contexts (journaling), relying solely on manual saving risks data loss from accidental navigation or crashes, causing high user frustration.
 **Action:** Implement invisible auto-saving to `localStorage` on input events, restoring state seamlessly on load, and clearing only upon successful submission.
+
+## 2026-02-08 - Destructive Action Patterns
+**Learning:** Using browser-native `confirm()` dialogs interrupts the flow and feels disjointed from the UI. However, accidental deletions must be prevented.
+**Action:** Implement a two-step confirmation on the button itself (e.g., "Delete" -> "Confirm Delete?"). Crucially, manage focus post-deletion: if the deleted element was the focus trigger, programmatically move focus to a stable, nearby element (like a filter or container) to prevent context loss.
