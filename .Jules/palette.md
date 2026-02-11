@@ -41,3 +41,7 @@
 ## 2026-02-08 - Destructive Action Patterns
 **Learning:** Using browser-native `confirm()` dialogs interrupts the flow and feels disjointed from the UI. However, accidental deletions must be prevented.
 **Action:** Implement a two-step confirmation on the button itself (e.g., "Delete" -> "Confirm Delete?"). Crucially, manage focus post-deletion: if the deleted element was the focus trigger, programmatically move focus to a stable, nearby element (like a filter or container) to prevent context loss.
+
+## 2026-02-11 - Responsive Shortcut Hints
+**Learning:** Keyboard shortcut hints clutter the UI on mobile devices where physical keyboards are rare.
+**Action:** Use responsive utility classes (e.g., `hidden sm:inline`) to show shortcut hints only on larger viewports where keyboard usage is likely.
