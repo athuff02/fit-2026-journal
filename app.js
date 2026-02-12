@@ -240,9 +240,22 @@ journalForm.addEventListener('keydown', (e) => {
 });
 
 /* ================= CALENDAR ================= */
+let calendarErrorTimeout;
+
+function resetCalendarError() {
+  if (calendarErrorTimeout) {
+    clearTimeout(calendarErrorTimeout);
+    calendarErrorTimeout = null;
+  }
+  calendarBtn.textContent = "Add Action Item to Calendar";
+  calendarBtn.classList.remove("bg-red-50", "text-red-600", "border-red-600");
+  calendarBtn.classList.add("border-gray-900");
+}
+
 calendarBtn.onclick = () => {
   if (!actionItem.value) {
-    const originalText = "Add Action Item to Calendar";
+    resetCalendarError(); // Clear any existing timeout first to be safe
+
     calendarBtn.textContent = "Action Item Required!";
     announce("Action Item Required. Please enter an action item.");
     calendarBtn.classList.remove("border-gray-900");
@@ -250,11 +263,7 @@ calendarBtn.onclick = () => {
 
     actionItem.focus();
 
-    setTimeout(() => {
-      calendarBtn.textContent = originalText;
-      calendarBtn.classList.remove("bg-red-50", "text-red-600", "border-red-600");
-      calendarBtn.classList.add("border-gray-900");
-    }, 2000);
+    calendarErrorTimeout = setTimeout(resetCalendarError, 2000);
     return;
   }
   window.open(
@@ -262,6 +271,13 @@ calendarBtn.onclick = () => {
     "_blank"
   );
 };
+
+// Clear error state immediately when user starts typing
+actionItem.addEventListener('input', () => {
+  if (calendarErrorTimeout) {
+    resetCalendarError();
+  }
+});
 
 /* ================= HISTORY ================= */
 THEMES.forEach(t => {
