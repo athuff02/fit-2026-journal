@@ -144,8 +144,25 @@ function calculateStreak(entries) {
 /* ================= INIT ================= */
 document.getElementById("dateDisplay").textContent = formatDate(today);
 document.getElementById("themeDisplay").textContent = `Today's Focus: ${getTodayTheme()}`;
-document.getElementById("scriptureDisplay").textContent =
-  `Scripture: ${SCRIPTURES[getTodayTheme()]}`;
+const scriptureDisplay = document.getElementById("scriptureDisplay");
+scriptureDisplay.textContent = `Scripture: ${SCRIPTURES[getTodayTheme()]}`;
+scriptureDisplay.onclick = () => {
+  navigator.clipboard.writeText(scriptureDisplay.textContent)
+    .then(() => {
+      scriptureDisplay.classList.remove("text-gray-700");
+      scriptureDisplay.classList.add("!text-green-600");
+      announce("Scripture copied to clipboard");
+      setTimeout(() => {
+        scriptureDisplay.classList.add("text-gray-700");
+        scriptureDisplay.classList.remove("!text-green-600");
+      }, 2000);
+    })
+    .catch(err => {
+      console.error("Failed to copy:", err);
+      announce("Failed to copy scripture");
+    });
+};
+
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modalContent");
 const exportBtn = document.getElementById("exportBtn");

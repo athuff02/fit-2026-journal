@@ -49,3 +49,7 @@
 ## 2026-02-12 - Error State Dismissal
 **Learning:** User frustration increases when UI components remain in an error state after the user has started correcting the input.
 **Action:** Implement immediate dismissal of error states (e.g., reset button color/text) as soon as the user interacts with the relevant input, rather than waiting for a timeout or re-submission.
+
+## 2026-02-13 - Hover State Overrides
+**Learning:** When providing temporary visual feedback (like success colors) on elements with strong `:hover` styles (e.g., `hover:text-gray-900`), the hover state can mask the feedback if the cursor remains over the element.
+**Action:** Use Tailwind's `!` prefix (e.g., `!text-green-600`) when applying temporary feedback classes via JavaScript to ensure the feedback color takes precedence over the hover state.
