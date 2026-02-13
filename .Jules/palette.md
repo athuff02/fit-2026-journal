@@ -45,3 +45,7 @@
 ## 2026-02-11 - Responsive Shortcut Hints
 **Learning:** Keyboard shortcut hints clutter the UI on mobile devices where physical keyboards are rare.
 **Action:** Use responsive utility classes (e.g., `hidden sm:inline`) to show shortcut hints only on larger viewports where keyboard usage is likely.
+
+## 2026-02-12 - Error State Dismissal
+**Learning:** User frustration increases when UI components remain in an error state after the user has started correcting the input.
+**Action:** Implement immediate dismissal of error states (e.g., reset button color/text) as soon as the user interacts with the relevant input, rather than waiting for a timeout or re-submission.
