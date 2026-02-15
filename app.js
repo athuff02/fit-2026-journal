@@ -319,12 +319,21 @@ function renderHistory() {
     p.className = "text-sm";
 
     if (filter === "all") {
-      p.textContent = "No entries yet. Start your journey in the Daily Focus tab!";
+      p.textContent = "No entries yet.";
+      emptyState.appendChild(p);
+
+      const cta = document.createElement("button");
+      cta.textContent = "Start Your First Entry";
+      cta.className = "mt-4 bg-gray-900 text-white py-2 px-4 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 hover:bg-gray-800 transition-colors";
+      cta.onclick = () => {
+        switchTab('dailyTab');
+        document.getElementById('q1').focus();
+      };
+      emptyState.appendChild(cta);
     } else {
       p.textContent = `No entries found for "${filter}".`;
+      emptyState.appendChild(p);
     }
-
-    emptyState.appendChild(p);
     historyList.appendChild(emptyState);
     return;
   }

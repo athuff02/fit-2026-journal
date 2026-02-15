@@ -53,3 +53,7 @@
 ## 2026-02-13 - Hover State Overrides
 **Learning:** When providing temporary visual feedback (like success colors) on elements with strong `:hover` styles (e.g., `hover:text-gray-900`), the hover state can mask the feedback if the cursor remains over the element.
 **Action:** Use Tailwind's `!` prefix (e.g., `!text-green-600`) when applying temporary feedback classes via JavaScript to ensure the feedback color takes precedence over the hover state.
+
+## 2026-02-15 - Empty State Call-to-Action
+**Learning:** Static empty states (e.g., "No entries yet") are dead ends that force users to figure out the next step.
+**Action:** Always include a primary Call-to-Action (CTA) button in empty states that directly navigates the user to the creation flow (e.g., "Start Journaling" -> Switches Tab -> Focuses Input).
