@@ -57,3 +57,7 @@
 ## 2026-02-14 - Actionable Empty States
 **Learning:** A "No entries found" message is a dead end that leaves users wondering what to do next.
 **Action:** Enhance empty states with a primary Call-to-Action (CTA) that guides the user to the most likely next step (e.g., "Write Today's Entry"), improving flow and engagement.
+
+## 2026-02-16 - Smooth State Reset vs Reload
+**Learning:** Using `location.reload()` to reset form state is jarring and disrupts the user experience, making the app feel "clunky".
+**Action:** Implement "soft resets" where data is re-fetched and UI elements (inputs, buttons, stats) are programmatically reset. Only use full reload when necessary (e.g., date change across midnight).
