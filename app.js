@@ -237,15 +237,47 @@ journalForm.onsubmit = e => {
   announce("Saving entry...");
 
   addEntry(newEntry, () => {
+    // Check for date change (midnight crossing)
+    const currentISO = getLocalISOString(new Date());
+    if (currentISO !== todayISO) {
+        announce("Entry saved! Refreshing for new day...");
+        setTimeout(() => location.reload(), 1000);
+        return;
+    }
+
     btn.textContent = "Saved!";
-    announce("Entry saved successfully. Refreshing page...");
+    announce("Entry saved successfully.");
     btn.classList.remove("bg-gray-900");
     btn.classList.add("bg-green-600", "border-green-600");
     // Clear draft on successful save
     if (typeof DRAFT_KEY !== 'undefined') localStorage.removeItem(DRAFT_KEY);
-    setTimeout(() => {
-      location.reload();
-    }, 1000);
+
+    // Refresh Data & UI without reload
+    getDBEntries(entries => {
+        window.journalEntries = entries;
+        document.getElementById("streakDisplay").textContent =
+            `Current Streak: ${calculateStreak(entries)} day${calculateStreak(entries) === 1 ? "" : "s"}`;
+        renderStats();
+        renderHistory();
+
+        // Clear Form
+        document.querySelectorAll("[data-question]").forEach(q => q.value = "");
+        document.getElementById("actionItem").value = "";
+
+        // Reset Textarea Heights
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        });
+
+        // Reset Button State
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = `Save Entry <span class="hidden sm:inline opacity-75 font-normal ml-1" aria-hidden="true">(Ctrl + Enter)</span>`;
+            btn.classList.add("bg-gray-900");
+            btn.classList.remove("bg-green-600", "border-green-600");
+        }, 2000);
+    });
   });
 };
 
