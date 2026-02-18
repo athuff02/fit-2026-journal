@@ -61,3 +61,7 @@
 ## 2026-02-16 - Smooth State Reset vs Reload
 **Learning:** Using `location.reload()` to reset form state is jarring and disrupts the user experience, making the app feel "clunky".
 **Action:** Implement "soft resets" where data is re-fetched and UI elements (inputs, buttons, stats) are programmatically reset. Only use full reload when necessary (e.g., date change across midnight).
+
+## 2026-02-17 - Contextual Form Prompts
+**Learning:** Generic form questions (e.g., "Why does this matter?") create cognitive distance, requiring users to mentally bridge the gap to the current context.
+**Action:** Dynamically update label text to include the specific context (e.g., "Why does Health/Fitness matter?"), reducing cognitive load and making prompts immediately actionable.

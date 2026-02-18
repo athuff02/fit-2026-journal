@@ -143,9 +143,12 @@ function calculateStreak(entries) {
 
 /* ================= INIT ================= */
 document.getElementById("dateDisplay").textContent = formatDate(today);
-document.getElementById("themeDisplay").textContent = `Today's Focus: ${getTodayTheme()}`;
+const currentTheme = getTodayTheme();
+document.getElementById("themeDisplay").textContent = `Today's Focus: ${currentTheme}`;
+updateQuestionLabels(currentTheme);
+
 const scriptureDisplay = document.getElementById("scriptureDisplay");
-scriptureDisplay.textContent = `Scripture: ${SCRIPTURES[getTodayTheme()]}`;
+scriptureDisplay.textContent = `Scripture: ${SCRIPTURES[currentTheme]}`;
 scriptureDisplay.onclick = () => {
   navigator.clipboard.writeText(scriptureDisplay.textContent)
     .then(() => {
@@ -706,6 +709,23 @@ function renderMonthlySummary(container) {
 }
 
 /* ================= UX ENHANCEMENTS ================= */
+function updateQuestionLabels(theme) {
+  const labels = {
+    q1: `1. Why does ${theme} matter?`,
+    q2: `2. Where do I want to be regarding ${theme}?`,
+    q3: `3. What might I be doing if I cared about ${theme} more?`,
+    q4: `4. What is one small improvement I can make regarding ${theme}?`,
+    q5: `5. What resistance to ${theme} do I need to overcome?`
+  };
+
+  for (const [key, text] of Object.entries(labels)) {
+    const label = document.querySelector(`label[for="${key}"]`);
+    if (label) {
+      label.textContent = text;
+    }
+  }
+}
+
 function setupAutoResize() {
   const textareas = document.querySelectorAll('textarea');
   textareas.forEach(textarea => {
