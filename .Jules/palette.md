@@ -65,3 +65,7 @@
 ## 2026-02-17 - Contextual Form Prompts
 **Learning:** Generic form questions (e.g., "Why does this matter?") create cognitive distance, requiring users to mentally bridge the gap to the current context.
 **Action:** Dynamically update label text to include the specific context (e.g., "Why does Health/Fitness matter?"), reducing cognitive load and making prompts immediately actionable.
+
+## 2026-02-18 - Export Action Feedback
+**Learning:** Browser-native download actions are invisible within the app, leaving users uncertain if the export process has started or failed.
+**Action:** Implement explicit button state feedback (e.g., "Exported!" + success color) for download actions to confirm successful initiation and improve confidence.

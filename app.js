@@ -101,6 +101,31 @@ function announce(message) {
   }
 }
 
+function showFeedback(btn, message, type = 'success') {
+  if (btn.dataset.feedbackActive) return;
+  btn.dataset.feedbackActive = "true";
+
+  const originalText = btn.textContent;
+  const originalClasses = btn.className;
+
+  btn.textContent = message;
+  announce(message);
+
+  if (type === 'success') {
+    btn.classList.remove("border-gray-900", "text-gray-900", "hover:bg-gray-50", "text-gray-700");
+    btn.classList.add("border-green-600", "text-green-600", "bg-green-50");
+  } else {
+    btn.classList.remove("border-gray-900", "text-gray-900", "hover:bg-gray-50", "text-gray-700");
+    btn.classList.add("border-red-600", "text-red-600", "bg-red-50");
+  }
+
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.className = originalClasses;
+    delete btn.dataset.feedbackActive;
+  }, 2000);
+}
+
 const today = new Date();
 
 function getLocalISOString(date) {
@@ -467,7 +492,7 @@ function openModal(entry) {
   modalContent.appendChild(action);
 
 
-  exportBtn.onclick = () => exportTxt(entry);
+  exportBtn.onclick = (e) => exportTxt(entry, e.target);
 
   // Delete Button Logic
   const deleteBtn = document.getElementById("deleteBtn");
@@ -520,7 +545,7 @@ document.addEventListener("keydown", (e) => {
 
 
 /* ================= EXPORT ================= */
-function exportTxt(entry) {
+function exportTxt(entry, btn) {
   const text = `
 Date: ${entry.date}
 Theme: ${entry.theme}
@@ -541,6 +566,8 @@ ${entry.actionItem}
   link.href = URL.createObjectURL(blob);
   link.download = `fit-2026_${entry.date}_${entry.theme.replace(/\W+/g,"_").toLowerCase()}.txt`;
   link.click();
+
+  if (btn) showFeedback(btn, "Exported!", "success");
 }
 
 function escapeCsv(field) {
@@ -554,8 +581,9 @@ function escapeCsv(field) {
   return stringField;
 }
 
-function exportAllCsv() {
+function exportAllCsv(btn) {
   if (!window.journalEntries || window.journalEntries.length === 0) {
+    if (btn) return showFeedback(btn, "No entries!", "error");
     return alert("No entries to export.");
   }
 
@@ -584,9 +612,11 @@ function exportAllCsv() {
 
   link.download = `fit-2026_full_export_${todayISO}.csv`;
   link.click();
+
+  if (btn) showFeedback(btn, "Exported!", "success");
 }
 
-exportAllBtn.onclick = exportAllCsv;
+exportAllBtn.onclick = (e) => exportAllCsv(e.target);
 
 /* ================= SUMMARY STATS ================= */
 function renderStats() {
