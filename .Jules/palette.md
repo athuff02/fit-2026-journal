@@ -69,3 +69,7 @@
 ## 2026-02-18 - Export Action Feedback
 **Learning:** Browser-native download actions are invisible within the app, leaving users uncertain if the export process has started or failed.
 **Action:** Implement explicit button state feedback (e.g., "Exported!" + success color) for download actions to confirm successful initiation and improve confidence.
+
+## 2026-02-19 - Skip Link Focus Management
+**Learning:** Simply adding an anchor to a content ID isn't enough for robust keyboard navigation; the target container needs `tabindex="-1"` to ensure focus is programmatically moved to it.
+**Action:** Always add `tabindex="-1"` to the target of a "Skip to content" link, and wrap the primary content area in a semantic `<main>` tag.
