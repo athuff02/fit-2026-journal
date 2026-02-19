@@ -830,6 +830,148 @@ function setupDrafts() {
     inputs.forEach(el => el.addEventListener("input", saveDraft));
 }
 
+/* ================= NOTIFICATIONS ================= */
+const settingsModal = document.getElementById("settingsModal");
+const enableNotificationsCheckbox = document.getElementById("enableNotifications");
+const notificationTimeInput = document.getElementById("notificationTime");
+const timeSettingsDiv = document.getElementById("timeSettings");
+
+// Load settings
+let notificationsEnabled = localStorage.getItem("notificationsEnabled") === "true";
+let notificationTime = localStorage.getItem("notificationTime") || "08:00";
+let lastNotificationDate = localStorage.getItem("lastNotificationDate") || "";
+
+function openSettings() {
+    settingsModal.classList.remove("hidden");
+    enableNotificationsCheckbox.checked = notificationsEnabled;
+    notificationTimeInput.value = notificationTime;
+    toggleTimeInput(notificationsEnabled);
+
+    // Trap focus in settings modal
+    settingsModal.addEventListener('keydown', trapFocusSettings);
+    // Focus first element
+    enableNotificationsCheckbox.focus();
+}
+
+function closeSettings() {
+    settingsModal.classList.add("hidden");
+    settingsModal.removeEventListener('keydown', trapFocusSettings);
+    document.getElementById("settingsBtn").focus();
+}
+
+function toggleTimeInput(show) {
+    if (show) {
+        timeSettingsDiv.classList.remove("hidden");
+    } else {
+        timeSettingsDiv.classList.add("hidden");
+    }
+}
+
+// Reuse trap focus logic or create a specific one for settings if elements differ significantly.
+// But trapFocus relies on 'modal' variable which points to history modal.
+// I should duplicate or generalize trapFocus.
+// For now, I'll create a simple one for settings.
+
+function trapFocusSettings(e) {
+  const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+  if (!isTabPressed) return;
+
+  const focusableElements = settingsModal.querySelectorAll(
+    'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+  );
+
+  if (focusableElements.length === 0) {
+      e.preventDefault();
+      return;
+  }
+
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (e.shiftKey) { // Shift + Tab
+    if (document.activeElement === firstElement || !Array.from(focusableElements).includes(document.activeElement)) {
+      lastElement.focus();
+      e.preventDefault();
+    }
+  } else { // Tab
+    if (document.activeElement === lastElement) {
+      firstElement.focus();
+      e.preventDefault();
+    }
+  }
+}
+
+
+document.getElementById("settingsBtn").onclick = openSettings;
+document.getElementById("cancelSettingsBtn").onclick = closeSettings;
+
+enableNotificationsCheckbox.onchange = () => {
+    toggleTimeInput(enableNotificationsCheckbox.checked);
+    if (enableNotificationsCheckbox.checked) {
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission().then(permission => {
+                if (permission !== "granted") {
+                    alert("We need permission to show notifications.");
+                    enableNotificationsCheckbox.checked = false;
+                    toggleTimeInput(false);
+                }
+            });
+        }
+    }
+};
+
+document.getElementById("saveSettingsBtn").onclick = () => {
+    notificationsEnabled = enableNotificationsCheckbox.checked;
+    notificationTime = notificationTimeInput.value;
+
+    localStorage.setItem("notificationsEnabled", notificationsEnabled);
+    localStorage.setItem("notificationTime", notificationTime);
+
+    closeSettings();
+    announce("Settings saved.");
+
+    // Ask for permission if they enabled it but didn't trigger change event (e.g. was already enabled visually but permission revoked)
+    if (notificationsEnabled && Notification.permission !== "granted") {
+         Notification.requestPermission();
+    }
+};
+
+// Check loop
+setInterval(() => {
+    if (!notificationsEnabled) return;
+    if (Notification.permission !== "granted") return;
+
+    const now = new Date();
+    const currentHours = String(now.getHours()).padStart(2, '0');
+    const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${currentHours}:${currentMinutes}`;
+
+    // Use local date string for "today" to match user's day
+    const localTodayStr = getLocalISOString(now);
+
+    if (currentTime === notificationTime && lastNotificationDate !== localTodayStr) {
+        try {
+            new Notification("Fit 2026 Journal", {
+                body: "Time to reflect on your goals!",
+                icon: "icon-192.png"
+            });
+
+            lastNotificationDate = localTodayStr;
+            localStorage.setItem("lastNotificationDate", lastNotificationDate);
+        } catch (e) {
+            console.error("Notification failed:", e);
+        }
+    }
+}, 30000); // Check every 30 seconds to be safe against drift
+
+// Also close settings on Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !settingsModal.classList.contains("hidden")) {
+    closeSettings();
+  }
+});
+
+
 /* ================= APP START ================= */
 let journalEntries = [];
 
