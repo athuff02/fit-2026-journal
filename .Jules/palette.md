@@ -73,3 +73,7 @@
 ## 2026-02-19 - Skip Link Focus Management
 **Learning:** Simply adding an anchor to a content ID isn't enough for robust keyboard navigation; the target container needs `tabindex="-1"` to ensure focus is programmatically moved to it.
 **Action:** Always add `tabindex="-1"` to the target of a "Skip to content" link, and wrap the primary content area in a semantic `<main>` tag.
+
+## 2026-02-21 - System Event Visibility
+**Learning:** Background system events (like auto-restoring drafts or background saves) and destructive actions (like deletion) often happen silently, leaving users uncertain if the action completed.
+**Action:** Implement a centralized Toast notification system to provide clear, transient visual confirmation for all significant system actions, ensuring users are always informed without cluttering the UI.
