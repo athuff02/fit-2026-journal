@@ -385,7 +385,7 @@ function renderHistory() {
 
       const cta = document.createElement("button");
       cta.textContent = "Write Today's Entry";
-      cta.className = "bg-gray-900 text-white px-4 py-2 rounded text-sm font-medium hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2";
+      cta.className = "bg-gray-900 text-white px-4 py-2 rounded text-sm font-medium hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2";
       cta.onclick = () => {
           switchTab('dailyTab');
           const firstInput = document.getElementById("q1");
@@ -402,7 +402,7 @@ function renderHistory() {
 
   filtered.forEach(e => {
       const btn = document.createElement("button");
-      btn.className = "w-full text-left border p-3 rounded bg-white transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2";
+      btn.className = "w-full text-left border p-3 rounded bg-white transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2";
 
       const p = document.createElement('p');
       p.className = "text-sm font-medium";
@@ -500,14 +500,14 @@ function openModal(entry) {
     deleteBtn.classList.remove("hidden");
     // Reset state
     deleteBtn.textContent = "Delete";
-    deleteBtn.className = "text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 hover:bg-red-50 ml-2";
+    deleteBtn.className = "text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 hover:bg-red-50 ml-2";
 
     let confirmDelete = false;
     deleteBtn.onclick = () => {
       if (!confirmDelete) {
           confirmDelete = true;
           deleteBtn.textContent = "Confirm Delete?";
-          deleteBtn.className = "bg-red-600 text-white px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 ml-2";
+          deleteBtn.className = "bg-red-600 text-white px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 ml-2";
           announce("Press delete again to confirm.");
       } else {
           deleteEntry(entry.createdAt, () => {

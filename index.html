@@ -27,7 +27,7 @@
 
   <!-- Header -->
   <header class="text-center mb-6 relative">
-    <button id="settingsBtn" class="absolute top-0 right-0 p-2 text-gray-400 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 rounded-full" aria-label="Settings">
+    <button id="settingsBtn" class="absolute top-0 right-0 p-2 text-gray-400 hover:text-gray-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded-full" aria-label="Settings">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -37,16 +37,16 @@
     <p id="dateDisplay" class="text-sm text-gray-700 mt-1"></p>
     <p id="themeDisplay" class="text-lg font-medium mt-2"></p>
     <p id="streakDisplay" class="text-sm text-gray-700 mt-1"></p>
-    <button id="scriptureDisplay" class="text-sm text-gray-700 mt-1 italic hover:text-gray-900 focus:outline-none focus:bg-gray-100 rounded px-2 py-1 transition-colors cursor-pointer" title="Click to copy" aria-label="Copy scripture to clipboard"></button>
+    <button id="scriptureDisplay" class="text-sm text-gray-700 mt-1 italic hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors cursor-pointer" title="Click to copy" aria-label="Copy scripture to clipboard"></button>
 
   </header>
 
   <!-- Tabs -->
   <nav class="flex justify-center gap-4 mb-6" role="tablist" aria-label="Journal Sections">
-    <button id="dailyTab" role="tab" aria-selected="true" aria-controls="dailyView" tabindex="0" class="border-b-2 border-gray-900 pb-1 text-sm font-medium focus:outline-none focus:bg-gray-100 rounded-t px-2 transition-colors">
+    <button id="dailyTab" role="tab" aria-selected="true" aria-controls="dailyView" tabindex="0" class="border-b-2 border-gray-900 pb-1 text-sm font-medium focus:outline-none focus:bg-gray-100 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded-t px-2 transition-colors">
       Daily Focus
     </button>
-    <button id="historyTab" role="tab" aria-selected="false" aria-controls="historyView" tabindex="-1" class="pb-1 text-sm font-medium text-gray-600 focus:outline-none focus:bg-gray-100 rounded-t px-2 transition-colors">
+    <button id="historyTab" role="tab" aria-selected="false" aria-controls="historyView" tabindex="-1" class="pb-1 text-sm font-medium text-gray-600 focus:outline-none focus:bg-gray-100 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded-t px-2 transition-colors">
       History
     </button>
   </nav>
@@ -87,7 +87,7 @@
         <span class="hidden sm:inline opacity-75 font-normal ml-1" aria-hidden="true">(Ctrl + Enter)</span>
       </button>
 
-      <button type="button" id="calendarBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+      <button type="button" id="calendarBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
         Add Action Item to Calendar
       </button>
 
@@ -104,7 +104,7 @@
 
     <div id="historyList" class="space-y-4"></div>
 
-    <button id="exportAllBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium mt-4 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+    <button id="exportAllBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
       Export All to CSV
     </button>
   </section>
@@ -117,9 +117,9 @@
   <div class="bg-white rounded p-4 max-w-md w-full space-y-3">
     <div id="modalContent"></div>
     <div class="flex gap-2">
-      <button id="exportBtn" class="border px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">Export .txt</button>
-      <button id="deleteBtn" class="hidden text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 hover:bg-red-50 ml-2">Delete</button>
-      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-700 rounded px-2 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">Close</button>
+      <button id="exportBtn" class="border px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Export .txt</button>
+      <button id="deleteBtn" class="hidden text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 hover:bg-red-50 ml-2">Delete</button>
+      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-700 rounded px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Close</button>
     </div>
   </div>
 </div>
@@ -145,8 +145,8 @@
     </div>
 
     <div class="flex justify-end gap-2 pt-2">
-      <button id="cancelSettingsBtn" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 transition-colors">Cancel</button>
-      <button id="saveSettingsBtn" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors">Save</button>
+      <button id="cancelSettingsBtn" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 transition-colors">Cancel</button>
+      <button id="saveSettingsBtn" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-900 transition-colors">Save</button>
     </div>
   </div>
 </div>
