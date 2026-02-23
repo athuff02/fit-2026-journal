@@ -91,12 +91,31 @@ function sanitize(str) {
   return temp.innerHTML;
 }
 
-function announce(message) {
+function announce(message, options = {}) {
   const announcer = document.getElementById("a11y-announcer");
   if (announcer) {
     announcer.textContent = message;
     setTimeout(() => {
       announcer.textContent = "";
+    }, 3000);
+  }
+
+  if (options.toast === false) return;
+
+  const container = document.getElementById("toast-container");
+  if (container) {
+    const toast = document.createElement("div");
+    toast.className = "bg-gray-900 text-white px-4 py-2 rounded shadow-lg text-sm transition-all duration-300 opacity-0 translate-y-2 pointer-events-auto text-center";
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.remove("opacity-0", "translate-y-2");
+    });
+
+    setTimeout(() => {
+      toast.classList.add("opacity-0", "translate-y-2");
+      setTimeout(() => toast.remove(), 300);
     }, 3000);
   }
 }
@@ -109,7 +128,7 @@ function showFeedback(btn, message, type = 'success') {
   const originalClasses = btn.className;
 
   btn.textContent = message;
-  announce(message);
+  announce(message, { toast: false });
 
   if (type === 'success') {
     btn.classList.remove("border-gray-900", "text-gray-900", "hover:bg-gray-50", "text-gray-700");
@@ -262,7 +281,7 @@ journalForm.onsubmit = e => {
   const btn = document.getElementById("saveBtn");
   btn.disabled = true;
   btn.textContent = "Saving...";
-  announce("Saving entry...");
+  announce("Saving entry...", { toast: false });
 
   addEntry(newEntry, () => {
     // Check for date change (midnight crossing)
@@ -274,7 +293,7 @@ journalForm.onsubmit = e => {
     }
 
     btn.textContent = "Saved!";
-    announce("Entry saved successfully.");
+    announce("Entry saved successfully.", { toast: false });
     btn.classList.remove("bg-gray-900");
     btn.classList.add("bg-green-600", "border-green-600");
     // Clear draft on successful save
@@ -334,7 +353,7 @@ calendarBtn.onclick = () => {
     resetCalendarError(); // Clear any existing timeout first to be safe
 
     calendarBtn.textContent = "Action Item Required!";
-    announce("Action Item Required. Please enter an action item.");
+    announce("Action Item Required. Please enter an action item.", { toast: false });
     calendarBtn.classList.remove("border-gray-900");
     calendarBtn.classList.add("bg-red-50", "text-red-600", "border-red-600");
 
@@ -508,7 +527,7 @@ function openModal(entry) {
           confirmDelete = true;
           deleteBtn.textContent = "Confirm Delete?";
           deleteBtn.className = "bg-red-600 text-white px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 ml-2";
-          announce("Press delete again to confirm.");
+          announce("Press delete again to confirm.", { toast: false });
       } else {
           deleteEntry(entry.createdAt, () => {
               announce("Entry deleted.");

@@ -73,3 +73,7 @@
 ## 2026-02-19 - Skip Link Focus Management
 **Learning:** Simply adding an anchor to a content ID isn't enough for robust keyboard navigation; the target container needs `tabindex="-1"` to ensure focus is programmatically moved to it.
 **Action:** Always add `tabindex="-1"` to the target of a "Skip to content" link, and wrap the primary content area in a semantic `<main>` tag.
+
+## 2026-02-23 - Unified Feedback System
+**Learning:** Screen-reader-only announcements (`aria-live`) provide critical feedback to AT users but leave sighted users guessing about system state (e.g., auto-saves, deletions), creating a disjointed experience.
+**Action:** Unify feedback by coupling `aria-live` announcements with a non-blocking visual toast notification system. Ensure redundancy is managed (suppress toast if button text updates) to prevent cognitive overload.
