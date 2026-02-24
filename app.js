@@ -111,7 +111,7 @@ function showToast(message, type = 'normal') {
 
   const toast = document.createElement('div');
   const bgClass = type === 'error' ? 'bg-red-600' : 'bg-gray-900';
-  toast.className = `${bgClass} text-white px-4 py-3 rounded shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center gap-2 pointer-events-auto`;
+  toast.className = `${bgClass} text-white px-4 py-3 rounded shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center gap-2`;
 
   const text = document.createElement('span');
   text.textContent = message;
