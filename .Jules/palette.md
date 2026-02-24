@@ -74,6 +74,10 @@
 **Learning:** Simply adding an anchor to a content ID isn't enough for robust keyboard navigation; the target container needs `tabindex="-1"` to ensure focus is programmatically moved to it.
 **Action:** Always add `tabindex="-1"` to the target of a "Skip to content" link, and wrap the primary content area in a semantic `<main>` tag.
 
+## 2026-02-21 - System Event Visibility
+**Learning:** Background system events (like auto-restoring drafts or background saves) and destructive actions (like deletion) often happen silently, leaving users uncertain if the action completed.
+**Action:** Implement a centralized Toast notification system to provide clear, transient visual confirmation for all significant system actions, ensuring users are always informed without cluttering the UI.
+
 ## 2026-02-23 - Focus Ring Visibility
 **Learning:** Default `:focus` rings on buttons appear on mouse click, creating visual noise and often leading designers to remove outlines entirely, hurting keyboard accessibility.
 **Action:** Replace `focus:ring` with `focus-visible:ring` for buttons to show focus indicators only when navigating via keyboard, while maintaining a clean UI for mouse users. Ensure elements relying on background changes for focus (like tabs) get an explicit ring for better visibility.
