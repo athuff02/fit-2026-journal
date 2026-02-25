@@ -574,6 +574,12 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+
 
 /* ================= EXPORT ================= */
 function exportTxt(entry, btn) {
@@ -998,6 +1004,12 @@ setInterval(() => {
 // Also close settings on Escape
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !settingsModal.classList.contains("hidden")) {
+    closeSettings();
+  }
+});
+
+settingsModal.addEventListener('click', (e) => {
+  if (e.target === settingsModal) {
     closeSettings();
   }
 });
