@@ -948,7 +948,7 @@ enableNotificationsCheckbox.onchange = () => {
         if (Notification.permission !== "granted") {
             Notification.requestPermission().then(permission => {
                 if (permission !== "granted") {
-                    alert("We need permission to show notifications.");
+                    announce("We need permission to show notifications.", { type: 'error' });
                     enableNotificationsCheckbox.checked = false;
                     toggleTimeInput(false);
                 }
