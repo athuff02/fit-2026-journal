@@ -81,6 +81,11 @@
 ## 2026-02-23 - Focus Ring Visibility
 **Learning:** Default `:focus` rings on buttons appear on mouse click, creating visual noise and often leading designers to remove outlines entirely, hurting keyboard accessibility.
 **Action:** Replace `focus:ring` with `focus-visible:ring` for buttons to show focus indicators only when navigating via keyboard, while maintaining a clean UI for mouse users. Ensure elements relying on background changes for focus (like tabs) get an explicit ring for better visibility.
+
 ## 2026-02-25 - Icon Button Contrast & Tooltips
 **Learning:** Light gray icons (text-gray-400) on white backgrounds fail WCAG AA contrast requirements and lack affordance. Icon-only buttons also confuse mouse users without hover explanations.
 **Action:** Enforce minimum `text-gray-600` for icons on light backgrounds to ensure 4.5:1+ contrast, and always include `title` attributes alongside `aria-label` to provide tooltips for mouse users.
+
+## 2026-02-27 - Non-Blocking Permission Feedback
+**Learning:** Using blocking `alert()` dialogs for system permission denials (like Notifications) is jarring and halts all user interaction, feeling aggressive rather than helpful.
+**Action:** Replace blocking alerts with non-intrusive Toast notifications (e.g., `announce(msg, {type: 'error'})`) to inform users of permission issues without disrupting their workflow.
