@@ -170,6 +170,32 @@ const todayISO = getLocalISOString(today);
 
 const formatDate = d => d.toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
 
+function formatHistoryDate(dateStr) {
+  // dateStr is YYYY-MM-DD
+  if (dateStr === todayISO) {
+    return "Today";
+  }
+
+  const yesterdayDate = new Date(todayISO);
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterdayISO = getLocalISOString(yesterdayDate);
+
+  if (dateStr === yesterdayISO) {
+    return "Yesterday";
+  }
+
+  // Parse YYYY-MM-DD components to avoid timezone issues with Date() constructor
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  return date.toLocaleDateString(undefined, {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
 function getTodayTheme() {
     const anchor = new Date("2026-01-01"); // UTC Midnight
     const current = new Date(todayISO); // UTC Midnight
@@ -437,7 +463,7 @@ function renderHistory() {
 
       const p = document.createElement('p');
       p.className = "text-sm font-medium";
-      p.textContent = `${e.date} — ${e.theme}`;
+      p.textContent = `${formatHistoryDate(e.date)} — ${e.theme}`;
       btn.appendChild(p);
 
       if (e.actionItem) {
