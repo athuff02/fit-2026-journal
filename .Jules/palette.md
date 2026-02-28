@@ -89,3 +89,7 @@
 ## 2026-02-27 - Non-Blocking Permission Feedback
 **Learning:** Using blocking `alert()` dialogs for system permission denials (like Notifications) is jarring and halts all user interaction, feeling aggressive rather than helpful.
 **Action:** Replace blocking alerts with non-intrusive Toast notifications (e.g., `announce(msg, {type: 'error'})`) to inform users of permission issues without disrupting their workflow.
+
+## 2026-02-28 - Consistent Hover States & Transitions
+**Learning:** Interactive elements like buttons feel stiff and unresponsive without clear visual feedback on hover. Relying solely on focus rings or click states leaves mouse users unsure if an element is active.
+**Action:** Add `hover:` states (e.g., `hover:bg-gray-800`, `hover:bg-gray-50`) and `transition-colors` to all interactive buttons. When toggling states via JS (like a 'Saving...' button), ensure these hover/transition classes are correctly removed and re-added to prevent visual bugs.

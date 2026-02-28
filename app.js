@@ -332,7 +332,7 @@ journalForm.onsubmit = e => {
 
     btn.textContent = "Saved!";
     announce("Entry saved successfully.", { toast: false });
-    btn.classList.remove("bg-gray-900");
+    btn.classList.remove("bg-gray-900", "hover:bg-gray-800", "transition-colors");
     btn.classList.add("bg-green-600", "border-green-600");
     // Clear draft on successful save
     if (typeof DRAFT_KEY !== 'undefined') localStorage.removeItem(DRAFT_KEY);
@@ -359,7 +359,7 @@ journalForm.onsubmit = e => {
         setTimeout(() => {
             btn.disabled = false;
             btn.innerHTML = `Save Entry <span class="hidden sm:inline opacity-75 font-normal ml-1" aria-hidden="true">(Ctrl + Enter)</span>`;
-            btn.classList.add("bg-gray-900");
+            btn.classList.add("bg-gray-900", "hover:bg-gray-800", "transition-colors");
             btn.classList.remove("bg-green-600", "border-green-600");
         }, 2000);
     });
