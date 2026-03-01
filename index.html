@@ -82,12 +82,12 @@
         Now, pray God will bless your efforts in this area.
       </p>
 
-      <button id="saveBtn" type="submit" aria-keyshortcuts="Control+Enter" title="Save Entry (Ctrl + Enter)" class="bg-gray-900 text-white py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-wait">
+      <button id="saveBtn" type="submit" aria-keyshortcuts="Control+Enter" title="Save Entry (Ctrl + Enter)" class="bg-gray-900 hover:bg-gray-800 transition-colors text-white py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-wait">
         Save Entry
         <span class="hidden sm:inline opacity-75 font-normal ml-1" aria-hidden="true">(Ctrl + Enter)</span>
       </button>
 
-      <button type="button" id="calendarBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
+      <button type="button" id="calendarBtn" class="border border-gray-900 hover:bg-gray-50 transition-colors py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
         Add Action Item to Calendar
       </button>
 
@@ -104,7 +104,7 @@
 
     <div id="historyList" class="space-y-4"></div>
 
-    <button id="exportAllBtn" class="border border-gray-900 py-3 rounded w-full text-sm font-medium mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
+    <button id="exportAllBtn" class="border border-gray-900 hover:bg-gray-50 transition-colors py-3 rounded w-full text-sm font-medium mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
       Export All to CSV
     </button>
   </section>
@@ -117,9 +117,9 @@
   <div class="bg-white rounded p-4 max-w-md w-full space-y-3">
     <div id="modalContent"></div>
     <div class="flex gap-2">
-      <button id="exportBtn" class="border px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Export .txt</button>
+      <button id="exportBtn" class="border hover:bg-gray-50 transition-colors px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Export .txt</button>
       <button id="deleteBtn" class="hidden text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 hover:bg-red-50 ml-2">Delete</button>
-      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-700 rounded px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Close</button>
+      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors rounded px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Close</button>
     </div>
   </div>
 </div>
