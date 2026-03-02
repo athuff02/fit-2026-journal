@@ -459,19 +459,29 @@ function renderHistory() {
 
   filtered.forEach(e => {
       const btn = document.createElement("button");
-      btn.className = "w-full text-left border p-3 rounded bg-white transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2";
+      btn.className = "w-full text-left border p-3 rounded bg-white transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 flex justify-between items-center";
+
+      const textDiv = document.createElement("div");
+      textDiv.className = "flex-grow overflow-hidden pr-2";
 
       const p = document.createElement('p');
       p.className = "text-sm font-medium";
       p.textContent = `${formatHistoryDate(e.date)} — ${e.theme}`;
-      btn.appendChild(p);
+      textDiv.appendChild(p);
 
       if (e.actionItem) {
         const action = document.createElement('p');
         action.className = "text-xs text-gray-600 mt-1 truncate";
         action.textContent = `Action: ${e.actionItem}`;
-        btn.appendChild(action);
+        textDiv.appendChild(action);
       }
+
+      btn.appendChild(textDiv);
+
+      const iconDiv = document.createElement("div");
+      iconDiv.className = "text-gray-400 flex-shrink-0";
+      iconDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>`;
+      btn.appendChild(iconDiv);
 
       btn.onclick = () => openModal(e);
       historyList.appendChild(btn);
