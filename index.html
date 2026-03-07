@@ -17,6 +17,9 @@
     }
   </style>
   <script src="app.js" defer></script>
+  <!-- Google API Client Libraries -->
+  <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script async defer src="https://accounts.google.com/gsi/client" onload="gsiLoaded()"></script>
 </head>
 
 <body class="bg-gray-50 text-gray-900 min-h-screen">
@@ -127,7 +130,7 @@
 <!-- SETTINGS MODAL -->
 <div id="settingsModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
   <div class="bg-white rounded p-4 max-w-sm w-full space-y-4 shadow-lg">
-    <h2 id="settingsTitle" class="text-lg font-semibold text-gray-900">Notification Settings</h2>
+    <h2 id="settingsTitle" class="text-lg font-semibold text-gray-900">Settings</h2>
 
     <div class="space-y-4">
       <div class="flex items-center justify-between">
@@ -141,6 +144,44 @@
         <p class="text-xs text-gray-600">
           Note: Notifications will only appear if this tab is open or the browser is running.
         </p>
+      </div>
+    </div>
+
+    <hr class="border-gray-200">
+
+    <div class="space-y-4">
+      <h3 class="text-sm font-semibold text-gray-900">Manage Themes</h3>
+      <div id="customThemesList" class="space-y-2 max-h-32 overflow-y-auto pr-1">
+        <!-- Custom themes will be listed here -->
+      </div>
+
+      <div class="space-y-2">
+        <label for="newThemeName" class="block text-xs font-medium text-gray-700">Add New Theme</label>
+        <input type="text" id="newThemeName" placeholder="Theme Name" class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-gray-900 focus:border-gray-900">
+        <input type="text" id="newThemeScripture" placeholder="Scripture Reference (Optional)" class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-gray-900 focus:border-gray-900">
+        <button id="addThemeBtn" class="w-full py-2 text-xs font-medium bg-gray-100 text-gray-900 hover:bg-gray-200 rounded transition-colors border border-gray-300">
+          Add Theme
+        </button>
+      </div>
+    </div>
+
+    <hr class="border-gray-200">
+
+    <div class="space-y-4">
+      <h3 class="text-sm font-semibold text-gray-900">Google Drive Sync</h3>
+      <div id="gdriveStatus" class="text-xs text-gray-600">
+        Not connected to Google Drive.
+      </div>
+      <div class="flex flex-col gap-2">
+        <button id="connectGDriveBtn" class="w-full py-2 text-xs font-medium bg-white text-gray-900 hover:bg-gray-50 rounded transition-colors border border-gray-900">
+          Connect Google Drive
+        </button>
+        <button id="syncNowBtn" class="hidden w-full py-2 text-xs font-medium bg-gray-900 text-white hover:bg-gray-800 rounded transition-colors border border-gray-900">
+          Sync Now
+        </button>
+        <button id="disconnectGDriveBtn" class="hidden w-full py-2 text-xs font-medium text-red-600 hover:bg-red-50 rounded transition-colors border border-red-600">
+          Disconnect
+        </button>
       </div>
     </div>
 

@@ -1,10 +1,10 @@
 /* ================= CONFIG ================= */
-const THEMES = [
+const DEFAULT_THEMES = [
   "Health/Fitness","Faith","Discipline/Habits","Romance","Parenting",
   "Career","Finances","Service/Legacy","Developing Intellect & Skills",
   "Friendships/Networking","Hobbies","Reflection/Planning"
 ];
-const SCRIPTURES = {
+const DEFAULT_SCRIPTURES = {
   "Health/Fitness": "1 Corinthians 6:19–20",
   "Faith": "Hebrews 11:6",
   "Discipline/Habits": "1 Corinthians 9:27",
@@ -18,6 +18,32 @@ const SCRIPTURES = {
   "Hobbies": "Ecclesiastes 3:13",
   "Reflection/Planning": "Psalm 90:12"
 };
+
+let THEMES = [...DEFAULT_THEMES];
+let SCRIPTURES = { ...DEFAULT_SCRIPTURES };
+
+function loadThemes() {
+  const custom = JSON.parse(localStorage.getItem('customThemes') || '[]');
+  THEMES = [...DEFAULT_THEMES, ...custom.map(t => t.name)];
+  SCRIPTURES = { ...DEFAULT_SCRIPTURES };
+  custom.forEach(t => {
+    if (t.scripture) SCRIPTURES[t.name] = t.scripture;
+  });
+}
+
+loadThemes();
+
+/* ================= GOOGLE DRIVE CONFIG ================= */
+const CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+const API_KEY = 'YOUR_API_KEY';
+const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+
+let tokenClient;
+let gapiInited = false;
+let gsiInited = false;
+let gdriveToken = null;
+
 const STORAGE_KEY = "north_star_entries";
 const DRAFT_KEY = "journal_current_draft";
 const ANCHOR_DATE = new Date("2026-01-01");
@@ -50,6 +76,9 @@ function addEntry(entry, callback) {
   const store = transaction.objectStore("entries");
   const request = store.add(entry);
   request.onsuccess = () => {
+    if (gdriveToken) {
+        syncToDrive();
+    }
     if (callback) callback();
   }
 }
@@ -224,14 +253,27 @@ function calculateStreak(entries) {
 }
 
 /* ================= INIT ================= */
-document.getElementById("dateDisplay").textContent = formatDate(today);
-const currentTheme = getTodayTheme();
-document.getElementById("themeDisplay").textContent = `Today's Focus: ${currentTheme}`;
-updateQuestionLabels(currentTheme);
+function initThemeUI() {
+  const currentTheme = getTodayTheme();
+  document.getElementById("dateDisplay").textContent = formatDate(today);
+  document.getElementById("themeDisplay").textContent = `Today's Focus: ${currentTheme}`;
+  updateQuestionLabels(currentTheme);
+
+  const scriptureDisplay = document.getElementById("scriptureDisplay");
+  if (SCRIPTURES[currentTheme]) {
+    scriptureDisplay.textContent = `Scripture: ${SCRIPTURES[currentTheme]}`;
+    scriptureDisplay.style.display = "inline-block";
+  } else {
+    scriptureDisplay.style.display = "none";
+  }
+}
+
+initThemeUI();
 
 const scriptureDisplay = document.getElementById("scriptureDisplay");
-scriptureDisplay.textContent = `Scripture: ${SCRIPTURES[currentTheme]}`;
 scriptureDisplay.onclick = () => {
+  const currentTheme = getTodayTheme();
+  if (!SCRIPTURES[currentTheme]) return;
   navigator.clipboard.writeText(scriptureDisplay.textContent)
     .then(() => {
       scriptureDisplay.classList.remove("text-gray-700");
@@ -414,11 +456,22 @@ actionItem.addEventListener('input', () => {
 });
 
 /* ================= HISTORY ================= */
-THEMES.forEach(t => {
+function initThemeFilter() {
+  const themeFilter = document.getElementById("themeFilter");
+  const currentValue = themeFilter.value;
+  themeFilter.innerHTML = '<option value="all">All Themes</option>';
+  THEMES.forEach(t => {
     const option = document.createElement('option');
     option.textContent = t;
+    option.value = t;
     themeFilter.appendChild(option);
-});
+  });
+  if (THEMES.includes(currentValue)) {
+    themeFilter.value = currentValue;
+  }
+}
+
+initThemeFilter();
 themeFilter.onchange = renderHistory;
 
 function renderHistory() {
@@ -919,12 +972,362 @@ function openSettings() {
     enableNotificationsCheckbox.checked = notificationsEnabled;
     notificationTimeInput.value = notificationTime;
     toggleTimeInput(notificationsEnabled);
+    renderCustomThemesList();
 
     // Trap focus in settings modal
     settingsModal.addEventListener('keydown', trapFocusSettings);
     // Focus first element
     enableNotificationsCheckbox.focus();
 }
+
+function renderCustomThemesList() {
+    const list = document.getElementById('customThemesList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const custom = JSON.parse(localStorage.getItem('customThemes') || '[]');
+    if (custom.length === 0) {
+        list.innerHTML = '<p class="text-xs text-gray-600 italic">No custom themes added.</p>';
+        return;
+    }
+
+    custom.forEach((t, index) => {
+        const item = document.createElement('div');
+        item.className = "flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200";
+
+        const info = document.createElement('div');
+        info.className = "flex flex-col overflow-hidden";
+        const name = document.createElement('span');
+        name.className = "text-xs font-medium text-gray-900 truncate";
+        name.textContent = t.name;
+        info.appendChild(name);
+
+        if (t.scripture) {
+            const script = document.createElement('span');
+            script.className = "text-[10px] text-gray-700 truncate";
+            script.textContent = t.scripture;
+            info.appendChild(script);
+        }
+
+        item.appendChild(info);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = "text-red-600 hover:text-red-800 p-1 flex-shrink-0";
+        removeBtn.setAttribute('aria-label', `Remove theme ${t.name}`);
+        removeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>';
+        removeBtn.onclick = () => removeCustomTheme(index);
+        item.appendChild(removeBtn);
+
+        list.appendChild(item);
+    });
+}
+
+function addCustomTheme() {
+    const nameInput = document.getElementById('newThemeName');
+    const scriptureInput = document.getElementById('newThemeScripture');
+    const name = nameInput.value.trim();
+    const scripture = scriptureInput.value.trim();
+
+    if (!name) {
+        announce("Theme name is required", { type: 'error' });
+        return;
+    }
+
+    if (DEFAULT_THEMES.includes(name)) {
+        announce("Theme already exists in defaults", { type: 'error' });
+        return;
+    }
+
+    const custom = JSON.parse(localStorage.getItem('customThemes') || '[]');
+    if (custom.some(t => t.name === name)) {
+        announce("Theme already exists", { type: 'error' });
+        return;
+    }
+
+    custom.push({ name, scripture });
+    localStorage.setItem('customThemes', JSON.stringify(custom));
+
+    nameInput.value = '';
+    scriptureInput.value = '';
+
+    loadThemes();
+    renderCustomThemesList();
+    refreshThemeUI();
+    announce("Theme added");
+}
+
+function removeCustomTheme(index) {
+    const custom = JSON.parse(localStorage.getItem('customThemes') || '[]');
+    custom.splice(index, 1);
+    localStorage.setItem('customThemes', JSON.stringify(custom));
+
+    loadThemes();
+    renderCustomThemesList();
+    refreshThemeUI();
+    announce("Theme removed");
+}
+
+function refreshThemeUI() {
+    initThemeFilter();
+    initThemeUI();
+    renderHistory();
+}
+
+document.getElementById('addThemeBtn').onclick = addCustomTheme;
+
+/* ================= GOOGLE DRIVE LOGIC ================= */
+
+function gapiLoaded() {
+  gapi.load('client', intializeGapiClient);
+}
+
+async function intializeGapiClient() {
+  await gapi.client.init({
+    apiKey: API_KEY,
+    discoveryDocs: [DISCOVERY_DOC],
+  });
+  gapiInited = true;
+  maybeEnableButtons();
+}
+
+function gsiLoaded() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+        if (resp.error !== undefined) {
+            throw (resp);
+        }
+        gdriveToken = resp;
+        localStorage.setItem('gdrive_token', JSON.stringify(resp));
+        updateGDriveUI(true);
+        syncFromDrive(); // Initial sync
+    },
+  });
+  gsiInited = true;
+  maybeEnableButtons();
+}
+
+function maybeEnableButtons() {
+  if (gapiInited && gsiInited) {
+    const savedToken = localStorage.getItem('gdrive_token');
+    if (savedToken) {
+        gdriveToken = JSON.parse(savedToken);
+        updateGDriveUI(true);
+        // We might need to refresh token if expired, but for now we'll try using it
+        gapi.client.setToken(gdriveToken);
+    }
+  }
+}
+
+function updateGDriveUI(connected) {
+    const connectBtn = document.getElementById('connectGDriveBtn');
+    const syncBtn = document.getElementById('syncNowBtn');
+    const disconnectBtn = document.getElementById('disconnectGDriveBtn');
+    const status = document.getElementById('gdriveStatus');
+
+    if (connected) {
+        connectBtn.classList.add('hidden');
+        syncBtn.classList.remove('hidden');
+        disconnectBtn.classList.remove('hidden');
+        const lastSync = localStorage.getItem('last_gdrive_sync');
+        status.textContent = lastSync ? `Last synced: ${lastSync}` : 'Connected to Google Drive.';
+    } else {
+        connectBtn.classList.remove('hidden');
+        syncBtn.classList.add('hidden');
+        disconnectBtn.classList.add('hidden');
+        status.textContent = 'Not connected to Google Drive.';
+    }
+}
+
+async function handleAuthClick() {
+  tokenClient.callback = async (resp) => {
+    if (resp.error !== undefined) {
+      throw (resp);
+    }
+    gdriveToken = resp;
+    localStorage.setItem('gdrive_token', JSON.stringify(resp));
+    gapi.client.setToken(gdriveToken);
+    updateGDriveUI(true);
+    await syncFromDrive();
+  };
+
+  if (gapi.client.getToken() === null) {
+    tokenClient.requestAccessToken({prompt: 'consent'});
+  } else {
+    tokenClient.requestAccessToken({prompt: ''});
+  }
+}
+
+function handleDisconnectClick() {
+  const token = gapi.client.getToken();
+  if (token !== null) {
+    google.accounts.oauth2.revoke(token.access_token);
+    gapi.client.setToken('');
+    gdriveToken = null;
+    localStorage.removeItem('gdrive_token');
+    updateGDriveUI(false);
+    announce("Disconnected from Google Drive");
+  }
+}
+
+async function syncToDrive() {
+    if (!gapiInited || !gdriveToken) return;
+
+    try {
+        const entries = await new Promise(resolve => getDBEntries(resolve));
+        const customThemes = JSON.parse(localStorage.getItem('customThemes') || '[]');
+        const backupData = {
+            entries,
+            customThemes,
+            timestamp: new Date().toISOString()
+        };
+
+        const fileName = 'vision_2026_backup.json';
+        const fileContent = JSON.stringify(backupData);
+
+        // Search for existing file
+        const response = await gapi.client.drive.files.list({
+            q: `name = '${fileName}' and trashed = false`,
+            fields: 'files(id)',
+            spaces: 'drive'
+        });
+
+        const files = response.result.files;
+        if (files && files.length > 0) {
+            // Update existing
+            const fileId = files[0].id;
+            await gapi.client.request({
+                path: `/upload/drive/v3/files/${fileId}`,
+                method: 'PATCH',
+                params: { uploadType: 'media' },
+                body: fileContent
+            });
+        } else {
+            // Create new
+            const metadata = {
+                name: fileName,
+                mimeType: 'application/json'
+            };
+
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', new Blob([fileContent], { type: 'application/json' }));
+
+            await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST',
+                headers: new Headers({ 'Authorization': 'Bearer ' + gdriveToken.access_token }),
+                body: form
+            });
+        }
+
+        const lastSync = new Date().toLocaleString();
+        localStorage.setItem('last_gdrive_sync', lastSync);
+        updateGDriveUI(true);
+        announce("Synced to Google Drive", { toast: false });
+    } catch (err) {
+        console.error('GDrive Sync Error:', err);
+        if (err.status === 401) {
+            // Token expired or invalid
+            handleAuthClick();
+        }
+    }
+}
+
+async function syncFromDrive() {
+    if (!gapiInited || !gdriveToken) return;
+
+    try {
+        const fileName = 'vision_2026_backup.json';
+        const response = await gapi.client.drive.files.list({
+            q: `name = '${fileName}' and trashed = false`,
+            fields: 'files(id)',
+            spaces: 'drive'
+        });
+
+        const files = response.result.files;
+        if (files && files.length > 0) {
+            const fileId = files[0].id;
+            const fileResponse = await gapi.client.drive.files.get({
+                fileId: fileId,
+                alt: 'media'
+            });
+
+            const backupData = fileResponse.result;
+            if (backupData && backupData.entries) {
+                await mergeBackup(backupData);
+                announce("Restored and merged from Google Drive");
+            }
+        }
+    } catch (err) {
+        console.error('GDrive Restore Error:', err);
+    }
+}
+
+async function mergeBackup(backupData) {
+    // Merge custom themes
+    if (backupData.customThemes) {
+        const localCustom = JSON.parse(localStorage.getItem('customThemes') || '[]');
+        const mergedThemes = [...localCustom];
+        backupData.customThemes.forEach(remoteTheme => {
+            if (!mergedThemes.some(t => t.name === remoteTheme.name)) {
+                mergedThemes.push(remoteTheme);
+            }
+        });
+        localStorage.setItem('customThemes', JSON.stringify(mergedThemes));
+        loadThemes();
+        refreshThemeUI();
+    }
+
+    // Merge entries
+    if (backupData.entries) {
+        const localEntries = await new Promise(resolve => getDBEntries(resolve));
+        const localIds = new Set(localEntries.map(e => e.createdAt));
+
+        const transaction = db.transaction(["entries"], "readwrite");
+        const store = transaction.objectStore("entries");
+
+        let addedCount = 0;
+        backupData.entries.forEach(remoteEntry => {
+            if (!localIds.has(remoteEntry.createdAt)) {
+                store.add(remoteEntry);
+                addedCount++;
+            }
+        });
+
+        transaction.oncomplete = () => {
+            if (addedCount > 0) {
+                getDBEntries(entries => {
+                    window.journalEntries = entries;
+                    document.getElementById("streakDisplay").textContent =
+                        `Current Streak: ${calculateStreak(entries)} day${calculateStreak(entries) === 1 ? "" : "s"}`;
+                    renderStats();
+                    renderHistory();
+                });
+            }
+        };
+    }
+}
+
+document.getElementById('connectGDriveBtn').onclick = handleAuthClick;
+document.getElementById('disconnectGDriveBtn').onclick = handleDisconnectClick;
+document.getElementById('syncNowBtn').onclick = async (e) => {
+    const btn = e.target;
+    const originalText = btn.textContent;
+    btn.textContent = 'Syncing...';
+    btn.disabled = true;
+    await syncToDrive();
+    btn.textContent = originalText;
+    btn.disabled = false;
+};
+
+// Global callbacks for GAPI/GSI
+window.gapiLoaded = gapiLoaded;
+window.gsiLoaded = gsiLoaded;
+
+// Check for scripts loading in case they finished before listeners
+if (window.gapi) gapiLoaded();
+if (window.google && window.google.accounts) gsiLoaded();
 
 function closeSettings() {
     settingsModal.classList.add("hidden");
