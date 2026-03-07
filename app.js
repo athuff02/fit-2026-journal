@@ -34,7 +34,7 @@ function loadThemes() {
 loadThemes();
 
 /* ================= GOOGLE DRIVE CONFIG ================= */
-const CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+const CLIENT_ID = '1031847940188-l4he0vi04rbd8dvadg236fs2dpsjdai3.apps.googleusercontent.com';
 const API_KEY = 'YOUR_API_KEY';
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
