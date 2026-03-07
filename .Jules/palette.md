@@ -93,3 +93,7 @@
 ## 2026-02-28 - Consistent Hover States & Transitions
 **Learning:** Interactive elements like buttons feel stiff and unresponsive without clear visual feedback on hover. Relying solely on focus rings or click states leaves mouse users unsure if an element is active.
 **Action:** Add `hover:` states (e.g., `hover:bg-gray-800`, `hover:bg-gray-50`) and `transition-colors` to all interactive buttons. When toggling states via JS (like a 'Saving...' button), ensure these hover/transition classes are correctly removed and re-added to prevent visual bugs.
+
+## 2026-03-01 - List Item Affordances
+**Learning:** History list items implemented as simple text cards lacked clear visual affordance indicating they were clickable to open a deeper, detailed view (drill-down).
+**Action:** Always include a clear visual indicator, such as a right-pointing chevron icon (`>`), in interactive list items that function as drill-down navigation, transforming them from static-looking cards into obvious interactive elements.

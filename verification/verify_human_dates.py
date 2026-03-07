@@ -45,7 +45,7 @@ def verify_human_dates():
             page.wait_for_selector("#historyList button")
 
             # Get list items text
-            items = page.locator("#historyList button > p:first-child").all_inner_texts()
+            items = page.locator("#historyList button > div > p:first-child").all_inner_texts()
 
             print("Found history items:", items)
 
