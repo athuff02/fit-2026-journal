@@ -465,7 +465,7 @@ function renderHistory() {
       textDiv.className = "flex-grow overflow-hidden pr-2";
 
       const p = document.createElement('p');
-      p.className = "text-sm font-medium";
+      p.className = "text-sm font-medium text-gray-900";
       p.textContent = `${formatHistoryDate(e.date)} — ${e.theme}`;
       textDiv.appendChild(p);
 
