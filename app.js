@@ -33,17 +33,6 @@ function loadThemes() {
 
 loadThemes();
 
-/* ================= GOOGLE DRIVE CONFIG ================= */
-const CLIENT_ID = '1031847940188-l4he0vi04rbd8dvadg236fs2dpsjdai3.apps.googleusercontent.com';
-const API_KEY = 'YOUR_API_KEY';
-const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
-
-let tokenClient;
-let gapiInited = false;
-let gsiInited = false;
-let gdriveToken = null;
-
 const STORAGE_KEY = "north_star_entries";
 const DRAFT_KEY = "journal_current_draft";
 const ANCHOR_DATE = new Date("2026-01-01");
@@ -76,9 +65,6 @@ function addEntry(entry, callback) {
   const store = transaction.objectStore("entries");
   const request = store.add(entry);
   request.onsuccess = () => {
-    if (gdriveToken) {
-        syncToDrive();
-    }
     if (callback) callback();
   }
 }
@@ -1075,194 +1061,66 @@ function refreshThemeUI() {
 
 document.getElementById('addThemeBtn').onclick = addCustomTheme;
 
-/* ================= GOOGLE DRIVE LOGIC ================= */
+/* ================= BACKUP & RESTORE LOGIC ================= */
 
-function gapiLoaded() {
-  gapi.load('client', intializeGapiClient);
-}
+async function exportBackupJSON(btn) {
+  try {
+    const entries = await new Promise(resolve => getDBEntries(resolve));
+    const customThemes = JSON.parse(localStorage.getItem('customThemes') || '[]');
+    const backupData = {
+      entries,
+      customThemes,
+      timestamp: new Date().toISOString()
+    };
 
-async function intializeGapiClient() {
-  await gapi.client.init({
-    apiKey: API_KEY,
-    discoveryDocs: [DISCOVERY_DOC],
-  });
-  gapiInited = true;
-  maybeEnableButtons();
-}
+    const fileContent = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([fileContent], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `vision_2026_backup_${todayISO}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 100);
 
-function gsiLoaded() {
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: (resp) => {
-        if (resp.error !== undefined) {
-            throw (resp);
-        }
-        gdriveToken = resp;
-        localStorage.setItem('gdrive_token', JSON.stringify(resp));
-        updateGDriveUI(true);
-        syncFromDrive(); // Initial sync
-    },
-  });
-  gsiInited = true;
-  maybeEnableButtons();
-}
-
-function maybeEnableButtons() {
-  if (gapiInited && gsiInited) {
-    const savedToken = localStorage.getItem('gdrive_token');
-    if (savedToken) {
-        gdriveToken = JSON.parse(savedToken);
-        updateGDriveUI(true);
-        // We might need to refresh token if expired, but for now we'll try using it
-        gapi.client.setToken(gdriveToken);
-    }
+    if (btn) showFeedback(btn, "Exported!", "success");
+  } catch (err) {
+    console.error("Export Error:", err);
+    if (btn) showFeedback(btn, "Error!", "error");
+    announce("Failed to export backup.", { type: 'error' });
   }
 }
 
-function updateGDriveUI(connected) {
-    const connectBtn = document.getElementById('connectGDriveBtn');
-    const syncBtn = document.getElementById('syncNowBtn');
-    const disconnectBtn = document.getElementById('disconnectGDriveBtn');
-    const status = document.getElementById('gdriveStatus');
-
-    if (connected) {
-        connectBtn.classList.add('hidden');
-        syncBtn.classList.remove('hidden');
-        disconnectBtn.classList.remove('hidden');
-        const lastSync = localStorage.getItem('last_gdrive_sync');
-        status.textContent = lastSync ? `Last synced: ${lastSync}` : 'Connected to Google Drive.';
-    } else {
-        connectBtn.classList.remove('hidden');
-        syncBtn.classList.add('hidden');
-        disconnectBtn.classList.add('hidden');
-        status.textContent = 'Not connected to Google Drive.';
-    }
+function importBackupJSON() {
+  document.getElementById('importFileInput').click();
 }
 
-async function handleAuthClick() {
-  tokenClient.callback = async (resp) => {
-    if (resp.error !== undefined) {
-      throw (resp);
+async function handleImportFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const backupData = JSON.parse(e.target.result);
+      if (!backupData.entries && !backupData.customThemes) {
+        throw new Error("Invalid backup file format.");
+      }
+      await mergeBackup(backupData);
+      announce("Backup restored and merged successfully.");
+    } catch (err) {
+      console.error("Import Error:", err);
+      announce("Failed to import backup. Ensure the file is a valid JSON backup.", { type: 'error' });
+    } finally {
+      // Reset input so the same file can be selected again
+      event.target.value = '';
     }
-    gdriveToken = resp;
-    localStorage.setItem('gdrive_token', JSON.stringify(resp));
-    gapi.client.setToken(gdriveToken);
-    updateGDriveUI(true);
-    await syncFromDrive();
   };
-
-  if (gapi.client.getToken() === null) {
-    tokenClient.requestAccessToken({prompt: 'consent'});
-  } else {
-    tokenClient.requestAccessToken({prompt: ''});
-  }
+  reader.readAsText(file);
 }
 
-function handleDisconnectClick() {
-  const token = gapi.client.getToken();
-  if (token !== null) {
-    google.accounts.oauth2.revoke(token.access_token);
-    gapi.client.setToken('');
-    gdriveToken = null;
-    localStorage.removeItem('gdrive_token');
-    updateGDriveUI(false);
-    announce("Disconnected from Google Drive");
-  }
-}
-
-async function syncToDrive() {
-    if (!gapiInited || !gdriveToken) return;
-
-    try {
-        const entries = await new Promise(resolve => getDBEntries(resolve));
-        const customThemes = JSON.parse(localStorage.getItem('customThemes') || '[]');
-        const backupData = {
-            entries,
-            customThemes,
-            timestamp: new Date().toISOString()
-        };
-
-        const fileName = 'vision_2026_backup.json';
-        const fileContent = JSON.stringify(backupData);
-
-        // Search for existing file
-        const response = await gapi.client.drive.files.list({
-            q: `name = '${fileName}' and trashed = false`,
-            fields: 'files(id)',
-            spaces: 'drive'
-        });
-
-        const files = response.result.files;
-        if (files && files.length > 0) {
-            // Update existing
-            const fileId = files[0].id;
-            await gapi.client.request({
-                path: `/upload/drive/v3/files/${fileId}`,
-                method: 'PATCH',
-                params: { uploadType: 'media' },
-                body: fileContent
-            });
-        } else {
-            // Create new
-            const metadata = {
-                name: fileName,
-                mimeType: 'application/json'
-            };
-
-            const form = new FormData();
-            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-            form.append('file', new Blob([fileContent], { type: 'application/json' }));
-
-            await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-                method: 'POST',
-                headers: new Headers({ 'Authorization': 'Bearer ' + gdriveToken.access_token }),
-                body: form
-            });
-        }
-
-        const lastSync = new Date().toLocaleString();
-        localStorage.setItem('last_gdrive_sync', lastSync);
-        updateGDriveUI(true);
-        announce("Synced to Google Drive", { toast: false });
-    } catch (err) {
-        console.error('GDrive Sync Error:', err);
-        if (err.status === 401) {
-            // Token expired or invalid
-            handleAuthClick();
-        }
-    }
-}
-
-async function syncFromDrive() {
-    if (!gapiInited || !gdriveToken) return;
-
-    try {
-        const fileName = 'vision_2026_backup.json';
-        const response = await gapi.client.drive.files.list({
-            q: `name = '${fileName}' and trashed = false`,
-            fields: 'files(id)',
-            spaces: 'drive'
-        });
-
-        const files = response.result.files;
-        if (files && files.length > 0) {
-            const fileId = files[0].id;
-            const fileResponse = await gapi.client.drive.files.get({
-                fileId: fileId,
-                alt: 'media'
-            });
-
-            const backupData = fileResponse.result;
-            if (backupData && backupData.entries) {
-                await mergeBackup(backupData);
-                announce("Restored and merged from Google Drive");
-            }
-        }
-    } catch (err) {
-        console.error('GDrive Restore Error:', err);
-    }
-}
+document.getElementById('exportJsonBtn').onclick = (e) => exportBackupJSON(e.target);
+document.getElementById('importJsonBtn').onclick = importBackupJSON;
+document.getElementById('importFileInput').onchange = handleImportFile;
 
 async function mergeBackup(backupData) {
     // Merge custom themes
@@ -1309,25 +1167,6 @@ async function mergeBackup(backupData) {
     }
 }
 
-document.getElementById('connectGDriveBtn').onclick = handleAuthClick;
-document.getElementById('disconnectGDriveBtn').onclick = handleDisconnectClick;
-document.getElementById('syncNowBtn').onclick = async (e) => {
-    const btn = e.target;
-    const originalText = btn.textContent;
-    btn.textContent = 'Syncing...';
-    btn.disabled = true;
-    await syncToDrive();
-    btn.textContent = originalText;
-    btn.disabled = false;
-};
-
-// Global callbacks for GAPI/GSI
-window.gapiLoaded = gapiLoaded;
-window.gsiLoaded = gsiLoaded;
-
-// Check for scripts loading in case they finished before listeners
-if (window.gapi) gapiLoaded();
-if (window.google && window.google.accounts) gsiLoaded();
 
 function closeSettings() {
     settingsModal.classList.add("hidden");
