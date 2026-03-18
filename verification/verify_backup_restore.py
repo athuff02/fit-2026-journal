@@ -113,7 +113,7 @@ async def verify_backup_restore():
             async with page.expect_popup() as popup_info:
                 await page.click("#calendarBtn")
             popup = await popup_info.value
-            if "calendar.google.com" in popup.url:
+            if popup.url.startswith("https://calendar.google.com/"):
                 print("Verified Google Calendar integration still works")
             else:
                 print(f"Calendar check failed: {popup.url}")
