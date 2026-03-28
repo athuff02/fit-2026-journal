@@ -191,14 +191,6 @@ function formatHistoryDate(dateStr) {
     return "Today";
   }
 
-  const yesterdayDate = new Date(todayISO);
-  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  const yesterdayISO = getLocalISOString(yesterdayDate);
-
-  if (dateStr === yesterdayISO) {
-    return "Yesterday";
-  }
-
   // Parse YYYY-MM-DD components to avoid timezone issues with Date() constructor
   const [year, month, day] = dateStr.split('-').map(Number);
   const date = new Date(year, month - 1, day);
@@ -754,7 +746,7 @@ function renderWeeklySummary(container) {
   const actions = recent.map(e => e.actionItem).filter(Boolean);
 
   const div = document.createElement("div");
-  div.className = "border rounded p-3 bg-gray-100";
+  div.className = "border rounded p-3 bg-white";
 
   // Header
   const header = document.createElement('p');
@@ -788,6 +780,7 @@ function renderWeeklySummary(container) {
       li.textContent = a;
       ul.appendChild(li);
   });
+  div.appendChild(ul);
   container.appendChild(div);
 }
 
