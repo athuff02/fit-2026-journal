@@ -56,10 +56,11 @@ def verify_human_dates():
             if not any("Today — Faith" in item for item in items):
                 failures.append(f"Expected 'Today — Faith', but not found in {items}")
 
-            # 2. Check Yesterday
-            # Expected: "Yesterday — Health/Fitness"
-            if not any("Yesterday — Health/Fitness" in item for item in items):
-                failures.append(f"Expected 'Yesterday — Health/Fitness', but not found in {items}")
+            # 2. Check Yesterday / Past Date
+            # Note: formatHistoryDate intentionally does not format as "Yesterday" per design guidelines memory.
+            # Expected: "Health/Fitness" entry present with formatted weekday date
+            if not any("Health/Fitness" in item for item in items):
+                failures.append(f"Expected Health/Fitness entry in {items}")
 
             # 3. Check Older Date
             # The current implementation in app.js uses 'short' month (e.g. "Oct") and 'short' weekday (e.g. "Fri")

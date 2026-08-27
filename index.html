@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vision 2026 Mindset Journal</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,176 +19,193 @@
   <script src="app.js" defer></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 min-h-screen">
-<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-gray-900 focus:shadow-lg focus:rounded focus:outline-none focus:ring-2 focus:ring-gray-900">
+<body class="bg-light text-dark min-vh-100">
+<a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 z-3 p-3 bg-white text-dark shadow rounded m-2 text-decoration-none">
   Skip to content
 </a>
-<div class="max-w-md mx-auto p-4">
+<div class="container py-4" style="max-width: 440px;">
 
   <!-- Header -->
-  <header class="text-center mb-6 relative">
-    <button id="settingsBtn" title="Settings" class="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded-full" aria-label="Settings">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <header class="text-center mb-4 position-relative">
+    <button id="settingsBtn" title="Settings" class="btn btn-link text-secondary p-1 position-absolute top-0 end-0 text-decoration-none shadow-none" aria-label="Settings">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     </button>
-    <h1 class="text-xl font-semibold">Vision 2026 Mindset Journal</h1>
-    <p id="dateDisplay" class="text-sm text-gray-700 mt-1"></p>
-    <p id="themeDisplay" class="text-lg font-medium mt-2"></p>
-    <p id="streakDisplay" class="text-sm text-gray-700 mt-1"></p>
-    <button id="scriptureDisplay" class="text-sm text-gray-700 mt-1 italic hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded px-2 py-1 transition-colors cursor-pointer" title="Click to copy" aria-label="Copy scripture to clipboard"></button>
-
+    <h1 class="fs-5 fw-semibold mb-1">Vision 2026 Mindset Journal</h1>
+    <p id="dateDisplay" class="text-secondary small mb-1"></p>
+    <p id="themeDisplay" class="fs-6 fw-medium mb-1"></p>
+    <p id="streakDisplay" class="text-secondary small mb-1"></p>
+    <button id="scriptureDisplay" class="btn btn-sm btn-link text-secondary fst-italic text-decoration-none px-2 py-1 shadow-none" title="Click to copy" aria-label="Copy scripture to clipboard"></button>
   </header>
 
   <!-- Tabs -->
-  <nav class="flex justify-center gap-4 mb-6" role="tablist" aria-label="Journal Sections">
-    <button id="dailyTab" role="tab" aria-selected="true" aria-controls="dailyView" tabindex="0" class="border-b-2 border-gray-900 pb-1 text-sm font-medium focus:outline-none focus:bg-gray-100 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded-t px-2 transition-colors">
-      Daily Focus
-    </button>
-    <button id="historyTab" role="tab" aria-selected="false" aria-controls="historyView" tabindex="-1" class="pb-1 text-sm font-medium text-gray-600 focus:outline-none focus:bg-gray-100 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 rounded-t px-2 transition-colors">
-      History
-    </button>
+  <nav class="mb-4" role="tablist" aria-label="Journal Sections">
+    <div class="nav nav-tabs nav-justified border-bottom border-dark" role="tablist">
+      <button id="dailyTab" role="tab" aria-selected="true" aria-controls="dailyView" tabindex="0" class="nav-link active text-dark fw-semibold border-0 border-bottom border-2 border-dark rounded-0 px-2">
+        Daily Focus
+      </button>
+      <button id="historyTab" role="tab" aria-selected="false" aria-controls="historyView" tabindex="-1" class="nav-link text-secondary border-0 rounded-0 px-2">
+        History
+      </button>
+    </div>
   </nav>
 
   <!-- LIVE REGION -->
-  <div id="a11y-announcer" class="sr-only" aria-live="polite"></div>
+  <div id="a11y-announcer" class="visually-hidden" aria-live="polite"></div>
 
   <main id="main-content" tabindex="-1">
     <!-- DAILY VIEW -->
     <section id="dailyView" role="tabpanel" aria-labelledby="dailyTab" tabindex="0">
-      <h2 class="sr-only">Daily Focus Entry Form</h2>
-    <form id="journalForm" class="space-y-4">
+      <h2 class="visually-hidden">Daily Focus Entry Form</h2>
+      <form id="journalForm" class="d-flex flex-column gap-3">
 
-        <label for="q1" class="block text-sm font-medium text-gray-700 mb-1">1. Why does this part of my life matter?</label>
-        <textarea id="q1" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q1"></textarea>
+        <div>
+          <label for="q1" class="form-label text-secondary small fw-medium mb-1">1. Why does this part of my life matter?</label>
+          <textarea id="q1" class="form-control" rows="3" data-question="q1"></textarea>
+        </div>
 
-        <label for="q2" class="block text-sm font-medium text-gray-700 mb-1">2. Where do I want to be as far as this theme?</label>
-        <textarea id="q2" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q2"></textarea>
+        <div>
+          <label for="q2" class="form-label text-secondary small fw-medium mb-1">2. Where do I want to be as far as this theme?</label>
+          <textarea id="q2" class="form-control" rows="3" data-question="q2"></textarea>
+        </div>
 
-        <label for="q3" class="block text-sm font-medium text-gray-700 mb-1">3. What might I be doing if I cared about this more?</label>
-        <textarea id="q3" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q3"></textarea>
+        <div>
+          <label for="q3" class="form-label text-secondary small fw-medium mb-1">3. What might I be doing if I cared about this more?</label>
+          <textarea id="q3" class="form-control" rows="3" data-question="q3"></textarea>
+        </div>
 
-        <label for="q4" class="block text-sm font-medium text-gray-700 mb-1">4. What is one small improvement I can make?</label>
-        <textarea id="q4" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q4"></textarea>
+        <div>
+          <label for="q4" class="form-label text-secondary small fw-medium mb-1">4. What is one small improvement I can make?</label>
+          <textarea id="q4" class="form-control" rows="3" data-question="q4"></textarea>
+        </div>
 
-        <label for="q5" class="block text-sm font-medium text-gray-700 mb-1">5. What resistance do I need to overcome?</label>
-        <textarea id="q5" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" rows="3" data-question="q5"></textarea>
+        <div>
+          <label for="q5" class="form-label text-secondary small fw-medium mb-1">5. What resistance do I need to overcome?</label>
+          <textarea id="q5" class="form-control" rows="3" data-question="q5"></textarea>
+        </div>
 
-      <label for="actionItem" class="block text-sm font-medium text-gray-700 mb-1">Action Item</label>
-      <input id="actionItem" type="text" placeholder="e.g., Schedule 15 mins to..." class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow" />
+        <div>
+          <label for="actionItem" class="form-label text-secondary small fw-medium mb-1">Action Item</label>
+          <input id="actionItem" type="text" placeholder="e.g., Schedule 15 mins to..." class="form-control" />
+        </div>
 
-      <p class="text-sm text-gray-700 italic text-center">
-        Now, pray God will bless your efforts in this area.
-      </p>
+        <p class="small text-secondary fst-italic text-center mb-0">
+          Now, pray God will bless your efforts in this area.
+        </p>
 
-      <button id="saveBtn" type="submit" aria-keyshortcuts="Control+Enter" title="Save Entry (Ctrl + Enter)" class="bg-gray-900 hover:bg-gray-800 transition-colors text-white py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-wait">
-        Save Entry
-        <span class="hidden sm:inline opacity-75 font-normal ml-1" aria-hidden="true">(Ctrl + Enter)</span>
+        <button id="saveBtn" type="submit" aria-keyshortcuts="Control+Enter" title="Save Entry (Ctrl + Enter)" class="btn btn-dark w-100 py-2.5 fw-medium">
+          Save Entry
+          <span class="d-none d-sm-inline opacity-75 fw-normal ms-1" aria-hidden="true">(Ctrl + Enter)</span>
+        </button>
+
+        <button type="button" id="calendarBtn" class="btn btn-outline-dark w-100 py-2.5 fw-medium">
+          Add Action Item to Calendar
+        </button>
+
+      </form>
+    </section>
+
+    <!-- HISTORY VIEW -->
+    <section id="historyView" class="d-none" role="tabpanel" aria-labelledby="historyTab" tabindex="0">
+      <h2 class="visually-hidden">Journal History and Statistics</h2>
+      <div id="statsContainer" class="mb-3 d-flex flex-column gap-3"></div>
+      <select id="themeFilter" aria-label="Filter history by theme" class="form-select mb-3">
+        <option value="all">All Themes</option>
+      </select>
+
+      <div id="historyList" class="d-flex flex-column gap-2"></div>
+
+      <button id="exportAllBtn" class="btn btn-outline-dark w-100 py-2.5 fw-medium mt-3">
+        Export All to CSV
       </button>
-
-      <button type="button" id="calendarBtn" class="border border-gray-900 hover:bg-gray-50 transition-colors py-3 rounded w-full text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
-        Add Action Item to Calendar
-      </button>
-
-    </form>
-  </section>
-
-  <!-- HISTORY VIEW -->
-  <section id="historyView" class="hidden" role="tabpanel" aria-labelledby="historyTab" tabindex="0">
-    <h2 class="sr-only">Journal History and Statistics</h2>
-    <div id="statsContainer" class="mb-4 space-y-4"></div>
-    <select id="themeFilter" aria-label="Filter history by theme" class="w-full p-2 border rounded mb-4 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow">
-      <option value="all">All Themes</option>
-    </select>
-
-    <div id="historyList" class="space-y-4"></div>
-
-    <button id="exportAllBtn" class="border border-gray-900 hover:bg-gray-50 transition-colors py-3 rounded w-full text-sm font-medium mt-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">
-      Export All to CSV
-    </button>
-  </section>
+    </section>
   </main>
 
 </div>
 
 <!-- MODAL -->
-<div id="modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="bg-white rounded p-4 max-w-md w-full space-y-3">
-    <div id="modalContent"></div>
-    <div class="flex gap-2">
-      <button id="exportBtn" class="border hover:bg-gray-50 transition-colors px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Export .txt</button>
-      <button id="deleteBtn" class="hidden text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 hover:bg-red-50 ml-2">Delete</button>
-      <button onclick="closeModal()" id="closeModalBtn" class="ml-auto text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors rounded px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2">Close</button>
+<div id="modal" class="modal d-none" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3 shadow">
+      <div id="modalContent" class="modal-body p-0 mb-3"></div>
+      <div class="modal-footer p-0 border-0 d-flex gap-2">
+        <button id="exportBtn" class="btn btn-outline-dark btn-sm">Export .txt</button>
+        <button id="deleteBtn" class="btn btn-outline-danger btn-sm d-none ms-2">Delete</button>
+        <button onclick="closeModal()" id="closeModalBtn" class="btn btn-sm btn-link text-secondary text-decoration-none ms-auto">Close</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- SETTINGS MODAL -->
-<div id="settingsModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-  <div class="bg-white rounded p-4 max-w-sm w-full space-y-4 shadow-lg">
-    <h2 id="settingsTitle" class="text-lg font-semibold text-gray-900">Settings</h2>
+<div id="settingsModal" class="modal d-none" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4 shadow" style="max-width: 380px; margin: auto;">
+      <h2 id="settingsTitle" class="fs-5 fw-semibold text-dark mb-3">Settings</h2>
 
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <label for="enableNotifications" class="text-sm font-medium text-gray-700">Daily Reminder</label>
-        <input type="checkbox" id="enableNotifications" class="h-5 w-5 accent-gray-900 border-gray-300 rounded focus:ring-gray-900">
+      <div class="mb-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <label for="enableNotifications" class="form-label text-dark small fw-medium mb-0">Daily Reminder</label>
+          <input type="checkbox" id="enableNotifications" class="form-check-input mt-0">
+        </div>
+
+        <div id="timeSettings" class="d-none mt-3">
+          <label for="notificationTime" class="form-label text-secondary small fw-medium mb-1">Reminder Time</label>
+          <input type="time" id="notificationTime" class="form-control form-control-sm mb-1">
+          <p class="form-text text-secondary small mb-0" style="font-size: 0.75rem;">
+            Note: Notifications will only appear if this tab is open or the browser is running.
+          </p>
+        </div>
       </div>
 
-      <div id="timeSettings" class="hidden space-y-2">
-        <label for="notificationTime" class="block text-sm font-medium text-gray-700">Reminder Time</label>
-        <input type="time" id="notificationTime" class="w-full p-2 border border-gray-300 rounded focus:ring-gray-900 focus:border-gray-900">
-        <p class="text-xs text-gray-600">
-          Note: Notifications will only appear if this tab is open or the browser is running.
+      <hr class="my-3 text-secondary">
+
+      <div class="mb-3">
+        <h3 class="fs-6 fw-semibold text-dark mb-2">Manage Themes</h3>
+        <div id="customThemesList" class="d-flex flex-column gap-2 overflow-y-auto pr-1 mb-3" style="max-height: 8rem;">
+          <!-- Custom themes will be listed here -->
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+          <label for="newThemeName" class="form-label text-secondary small fw-medium mb-0">Add New Theme</label>
+          <input type="text" id="newThemeName" placeholder="Theme Name" class="form-control form-control-sm">
+          <input type="text" id="newThemeScripture" placeholder="Scripture Reference (Optional)" class="form-control form-control-sm">
+          <button id="addThemeBtn" class="btn btn-sm btn-light border text-dark w-100 fw-medium">
+            Add Theme
+          </button>
+        </div>
+      </div>
+
+      <hr class="my-3 text-secondary">
+
+      <div class="mb-3">
+        <h3 class="fs-6 fw-semibold text-dark mb-1">Backup & Restore</h3>
+        <p class="form-text text-secondary small mb-2" style="font-size: 0.75rem;">
+          Export your data to a JSON file for safe keeping, or import a previously saved backup.
         </p>
+        <div class="d-flex flex-column gap-2">
+          <button id="exportJsonBtn" class="btn btn-outline-dark btn-sm w-100 fw-medium">
+            Export Backup (JSON)
+          </button>
+          <button id="importJsonBtn" class="btn btn-dark btn-sm w-100 fw-medium">
+            Import Backup (JSON)
+          </button>
+          <input type="file" id="importFileInput" accept=".json" class="d-none">
+        </div>
       </div>
-    </div>
 
-    <hr class="border-gray-200">
-
-    <div class="space-y-4">
-      <h3 class="text-sm font-semibold text-gray-900">Manage Themes</h3>
-      <div id="customThemesList" class="space-y-2 max-h-32 overflow-y-auto pr-1">
-        <!-- Custom themes will be listed here -->
+      <div class="d-flex justify-content-end gap-2 pt-2">
+        <button id="cancelSettingsBtn" class="btn btn-sm btn-link text-secondary text-decoration-none">Cancel</button>
+        <button id="saveSettingsBtn" class="btn btn-sm btn-dark px-3">Save</button>
       </div>
-
-      <div class="space-y-2">
-        <label for="newThemeName" class="block text-xs font-medium text-gray-700">Add New Theme</label>
-        <input type="text" id="newThemeName" placeholder="Theme Name" class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-gray-900 focus:border-gray-900">
-        <input type="text" id="newThemeScripture" placeholder="Scripture Reference (Optional)" class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-gray-900 focus:border-gray-900">
-        <button id="addThemeBtn" class="w-full py-2 text-xs font-medium bg-gray-100 text-gray-900 hover:bg-gray-200 rounded transition-colors border border-gray-300">
-          Add Theme
-        </button>
-      </div>
-    </div>
-
-    <hr class="border-gray-200">
-
-    <div class="space-y-4">
-      <h3 class="text-sm font-semibold text-gray-900">Backup & Restore</h3>
-      <p class="text-xs text-gray-600">
-        Export your data to a JSON file for safe keeping, or import a previously saved backup.
-      </p>
-      <div class="flex flex-col gap-2">
-        <button id="exportJsonBtn" class="w-full py-2 text-xs font-medium bg-white text-gray-900 hover:bg-gray-50 rounded transition-colors border border-gray-900">
-          Export Backup (JSON)
-        </button>
-        <button id="importJsonBtn" class="w-full py-2 text-xs font-medium bg-gray-900 text-white hover:bg-gray-800 rounded transition-colors border border-gray-900">
-          Import Backup (JSON)
-        </button>
-        <input type="file" id="importFileInput" accept=".json" class="hidden">
-      </div>
-    </div>
-
-    <div class="flex justify-end gap-2 pt-2">
-      <button id="cancelSettingsBtn" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 transition-colors">Cancel</button>
-      <button id="saveSettingsBtn" class="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gray-900 transition-colors">Save</button>
     </div>
   </div>
 </div>
 
 <!-- TOAST CONTAINER -->
-<div id="toast-container" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-max max-w-sm"></div>
+<div id="toast-container" class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3 z-3"></div>
 
 </body>
 </html>

@@ -125,24 +125,26 @@ function showToast(message, type = 'normal') {
   if (!container) return;
 
   const toast = document.createElement('div');
-  const bgClass = type === 'error' ? 'bg-red-600' : 'bg-gray-900';
-  toast.className = `${bgClass} text-white px-4 py-3 rounded shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center gap-2`;
+  const bgClass = type === 'error' ? 'text-bg-danger' : 'text-bg-dark';
+  toast.className = `toast align-items-center ${bgClass} border-0 show fade`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.setAttribute('aria-atomic', 'true');
 
-  const text = document.createElement('span');
-  text.textContent = message;
-  text.className = "text-sm font-medium";
-  toast.appendChild(text);
+  const flex = document.createElement('div');
+  flex.className = 'd-flex';
 
+  const body = document.createElement('div');
+  body.className = 'toast-body small fw-medium';
+  body.textContent = message;
+  flex.appendChild(body);
+
+  toast.appendChild(flex);
   container.appendChild(toast);
-
-  // Animate in
-  requestAnimationFrame(() => {
-    toast.classList.remove("translate-y-10", "opacity-0");
-  });
 
   // Remove after 3s
   setTimeout(() => {
-    toast.classList.add("opacity-0", "translate-y-10");
+    toast.classList.remove('show');
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
@@ -158,11 +160,9 @@ function showFeedback(btn, message, type = 'success') {
   announce(message, { toast: false });
 
   if (type === 'success') {
-    btn.classList.remove("border-gray-900", "text-gray-900", "hover:bg-gray-50", "text-gray-700");
-    btn.classList.add("border-green-600", "text-green-600", "bg-green-50");
+    btn.className = "btn btn-outline-success btn-sm";
   } else {
-    btn.classList.remove("border-gray-900", "text-gray-900", "hover:bg-gray-50", "text-gray-700");
-    btn.classList.add("border-red-600", "text-red-600", "bg-red-50");
+    btn.className = "btn btn-outline-danger btn-sm";
   }
 
   setTimeout(() => {
@@ -254,12 +254,12 @@ scriptureDisplay.onclick = () => {
   if (!SCRIPTURES[currentTheme]) return;
   navigator.clipboard.writeText(scriptureDisplay.textContent)
     .then(() => {
-      scriptureDisplay.classList.remove("text-gray-700");
-      scriptureDisplay.classList.add("!text-green-600");
+      scriptureDisplay.classList.remove("text-secondary");
+      scriptureDisplay.classList.add("text-success");
       announce("Scripture copied to clipboard");
       setTimeout(() => {
-        scriptureDisplay.classList.add("text-gray-700");
-        scriptureDisplay.classList.remove("!text-green-600");
+        scriptureDisplay.classList.add("text-secondary");
+        scriptureDisplay.classList.remove("text-success");
       }, 2000);
     })
     .catch(err => {
@@ -279,22 +279,19 @@ let lastFocusedElement = null;
 function switchTab(tabId, focus = false) {
   const isDaily = tabId === 'dailyTab';
 
-  dailyView.classList.toggle("hidden", !isDaily);
-  historyView.classList.toggle("hidden", isDaily);
-
-  const activeClasses = ["border-b-2", "border-gray-900", "text-gray-900"];
-  const inactiveClasses = ["text-gray-600"];
+  dailyView.classList.toggle("d-none", !isDaily);
+  historyView.classList.toggle("d-none", isDaily);
 
   if (isDaily) {
-    dailyTab.classList.add(...activeClasses);
-    dailyTab.classList.remove(...inactiveClasses);
-    historyTab.classList.remove(...activeClasses);
-    historyTab.classList.add(...inactiveClasses);
+    dailyTab.classList.add("active", "text-dark", "fw-semibold", "border-bottom", "border-2", "border-dark");
+    dailyTab.classList.remove("text-secondary");
+    historyTab.classList.remove("active", "text-dark", "fw-semibold", "border-bottom", "border-2", "border-dark");
+    historyTab.classList.add("text-secondary");
   } else {
-    historyTab.classList.add(...activeClasses);
-    historyTab.classList.remove(...inactiveClasses);
-    dailyTab.classList.remove(...activeClasses);
-    dailyTab.classList.add(...inactiveClasses);
+    historyTab.classList.add("active", "text-dark", "fw-semibold", "border-bottom", "border-2", "border-dark");
+    historyTab.classList.remove("text-secondary");
+    dailyTab.classList.remove("active", "text-dark", "fw-semibold", "border-bottom", "border-2", "border-dark");
+    dailyTab.classList.add("text-secondary");
     renderHistory();
     renderStats();
   }
@@ -352,8 +349,8 @@ journalForm.onsubmit = e => {
 
     btn.textContent = "Saved!";
     announce("Entry saved successfully.", { toast: false });
-    btn.classList.remove("bg-gray-900", "hover:bg-gray-800", "transition-colors");
-    btn.classList.add("bg-green-600", "border-green-600");
+    btn.classList.remove("btn-dark");
+    btn.classList.add("btn-success");
     // Clear draft on successful save
     if (typeof DRAFT_KEY !== 'undefined') localStorage.removeItem(DRAFT_KEY);
 
@@ -378,9 +375,9 @@ journalForm.onsubmit = e => {
         // Reset Button State
         setTimeout(() => {
             btn.disabled = false;
-            btn.innerHTML = `Save Entry <span class="hidden sm:inline opacity-75 font-normal ml-1" aria-hidden="true">(Ctrl + Enter)</span>`;
-            btn.classList.add("bg-gray-900", "hover:bg-gray-800", "transition-colors");
-            btn.classList.remove("bg-green-600", "border-green-600");
+            btn.innerHTML = `Save Entry <span class="d-none d-sm-inline opacity-75 fw-normal ms-1" aria-hidden="true">(Ctrl + Enter)</span>`;
+            btn.classList.add("btn-dark");
+            btn.classList.remove("btn-success");
         }, 2000);
     });
   });
@@ -402,8 +399,8 @@ function resetCalendarError() {
     calendarErrorTimeout = null;
   }
   calendarBtn.textContent = "Add Action Item to Calendar";
-  calendarBtn.classList.remove("bg-red-50", "text-red-600", "border-red-600");
-  calendarBtn.classList.add("border-gray-900");
+  calendarBtn.classList.remove("btn-outline-danger", "bg-danger-subtle");
+  calendarBtn.classList.add("btn-outline-dark");
 }
 
 calendarBtn.onclick = () => {
@@ -412,8 +409,8 @@ calendarBtn.onclick = () => {
 
     calendarBtn.textContent = "Action Item Required!";
     announce("Action Item Required. Please enter an action item.", { toast: false });
-    calendarBtn.classList.remove("border-gray-900");
-    calendarBtn.classList.add("bg-red-50", "text-red-600", "border-red-600");
+    calendarBtn.classList.remove("btn-outline-dark");
+    calendarBtn.classList.add("btn-outline-danger", "bg-danger-subtle");
 
     actionItem.focus();
 
@@ -461,19 +458,18 @@ function renderHistory() {
 
   if (filtered.length === 0) {
     const emptyState = document.createElement("div");
-    emptyState.className = "text-center py-8 text-gray-700";
+    emptyState.className = "text-center py-4 text-secondary";
 
     const p = document.createElement("p");
-    p.className = "text-sm";
+    p.className = "small mb-3";
 
     if (filter === "all") {
       p.textContent = "No entries yet. Start your journey in the Daily Focus tab!";
-      p.className = "text-sm mb-4";
       emptyState.appendChild(p);
 
       const cta = document.createElement("button");
       cta.textContent = "Write Today's Entry";
-      cta.className = "bg-gray-900 text-white px-4 py-2 rounded text-sm font-medium hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2";
+      cta.className = "btn btn-dark btn-sm fw-medium";
       cta.onclick = () => {
           switchTab('dailyTab');
           const firstInput = document.getElementById("q1");
@@ -490,19 +486,19 @@ function renderHistory() {
 
   filtered.forEach(e => {
       const btn = document.createElement("button");
-      btn.className = "w-full text-left border p-3 rounded bg-white transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 flex justify-between items-center";
+      btn.className = "btn btn-outline-secondary w-100 text-start p-3 bg-white text-dark d-flex justify-content-between align-items-center group";
 
       const textDiv = document.createElement("div");
-      textDiv.className = "flex-grow overflow-hidden pr-2";
+      textDiv.className = "flex-grow-1 overflow-hidden pe-2";
 
       const p = document.createElement('p');
-      p.className = "text-sm font-medium text-gray-900";
+      p.className = "small fw-medium text-dark mb-0";
       p.textContent = `${formatHistoryDate(e.date)} — ${e.theme}`;
       textDiv.appendChild(p);
 
       if (e.actionItem) {
         const action = document.createElement('p');
-        action.className = "text-xs text-gray-600 mt-1 truncate";
+        action.className = "small text-secondary mt-1 mb-0 text-truncate";
         action.textContent = `Action: ${e.actionItem}`;
         textDiv.appendChild(action);
       }
@@ -510,8 +506,8 @@ function renderHistory() {
       btn.appendChild(textDiv);
 
       const iconDiv = document.createElement("div");
-      iconDiv.className = "text-gray-400 flex-shrink-0";
-      iconDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>`;
+      iconDiv.className = "text-secondary flex-shrink-0";
+      iconDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" class="text-secondary"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>`;
       btn.appendChild(iconDiv);
 
       btn.onclick = () => openModal(e);
@@ -551,13 +547,14 @@ function trapFocus(e) {
 
 function openModal(entry) {
   lastFocusedElement = document.activeElement;
-  modal.classList.remove("hidden");
+  modal.classList.remove("d-none");
+  modal.classList.add("d-block");
   modal.addEventListener('keydown', trapFocus);
   modalContent.innerHTML = ''; // Clear previous content
 
   // Header
   const header = document.createElement('h2');
-  header.className = "font-medium outline-none";
+  header.className = "fs-6 fw-semibold text-dark outline-none mb-2";
   header.id = "modalTitle";
   header.tabIndex = -1;
   header.textContent = `${entry.date} — ${entry.theme}`;
@@ -565,14 +562,14 @@ function openModal(entry) {
 
   // Scripture
   const scripture = document.createElement('p');
-  scripture.className = "text-sm italic text-gray-700";
+  scripture.className = "small fst-italic text-secondary mb-2";
   scripture.textContent = `Scripture: ${SCRIPTURES[entry.theme]}`;
   modalContent.appendChild(scripture);
 
   // Responses
   Object.values(entry.responses).forEach((r, i) => {
     const p = document.createElement('p');
-    p.className = "text-sm mt-1";
+    p.className = "small text-dark mb-1";
     const strong = document.createElement('strong');
     strong.textContent = `Q${i+1}: `;
     p.appendChild(strong);
@@ -582,7 +579,7 @@ function openModal(entry) {
 
   // Action Item
   const action = document.createElement('p');
-  action.className = "text-sm mt-2";
+  action.className = "small text-dark mt-2 mb-0";
   const strong = document.createElement('strong');
   strong.textContent = 'Action: ';
   action.appendChild(strong);
@@ -595,17 +592,17 @@ function openModal(entry) {
   // Delete Button Logic
   const deleteBtn = document.getElementById("deleteBtn");
   if (deleteBtn) {
-    deleteBtn.classList.remove("hidden");
+    deleteBtn.classList.remove("d-none");
     // Reset state
     deleteBtn.textContent = "Delete";
-    deleteBtn.className = "text-red-600 border border-red-600 px-3 py-2 rounded text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 hover:bg-red-50 ml-2";
+    deleteBtn.className = "btn btn-outline-danger btn-sm ms-2";
 
     let confirmDelete = false;
     deleteBtn.onclick = () => {
       if (!confirmDelete) {
           confirmDelete = true;
           deleteBtn.textContent = "Confirm Delete?";
-          deleteBtn.className = "bg-red-600 text-white px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 ml-2";
+          deleteBtn.className = "btn btn-danger btn-sm ms-2";
           announce("Press delete again to confirm.", { toast: false });
       } else {
           deleteEntry(entry.createdAt, () => {
@@ -628,7 +625,8 @@ function openModal(entry) {
 }
 
 function closeModal() {
-  modal.classList.add("hidden");
+  modal.classList.add("d-none");
+  modal.classList.remove("d-block");
   modal.removeEventListener('keydown', trapFocus);
   if (lastFocusedElement) {
     lastFocusedElement.focus();
@@ -636,7 +634,7 @@ function closeModal() {
 }
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+  if (e.key === "Escape" && !modal.classList.contains("d-none")) {
     closeModal();
   }
 });
@@ -745,43 +743,43 @@ function renderWeeklySummary(container) {
   const themes = [...new Set(recent.map(e => e.theme))];
   const actions = recent.map(e => e.actionItem).filter(Boolean);
 
-  const div = document.createElement("div");
-  div.className = "border rounded p-3 bg-white";
+  const card = document.createElement("div");
+  card.className = "card card-body p-3 bg-white text-dark";
 
   // Header
   const header = document.createElement('p');
-  header.className = "font-medium text-sm";
+  header.className = "fw-medium small mb-1";
   header.textContent = "Weekly Summary";
-  div.appendChild(header);
+  card.appendChild(header);
 
   // Days Completed
   const days = document.createElement('p');
-  days.className = "text-sm mt-1";
+  days.className = "small mb-1";
   days.textContent = `Days Completed: ${recent.length}/7`;
-  div.appendChild(days);
+  card.appendChild(days);
 
   // Themes
   const themesP = document.createElement('p');
-  themesP.className = "text-sm mt-1";
+  themesP.className = "small mb-2";
   themesP.textContent = `Themes: ${themes.join(", ")}`;
-  div.appendChild(themesP);
+  card.appendChild(themesP);
 
   // Actions Header
   const actionsHeader = document.createElement('p');
-  actionsHeader.className = "text-sm mt-2 font-medium";
+  actionsHeader.className = "small fw-medium mb-1";
   actionsHeader.textContent = "Action Items:";
-  div.appendChild(actionsHeader);
+  card.appendChild(actionsHeader);
 
   // Actions List
   const ul = document.createElement('ul');
-  ul.className = "text-sm list-disc ml-4";
+  ul.className = "small mb-0 ps-3";
   actions.forEach(a => {
       const li = document.createElement('li');
       li.textContent = a;
       ul.appendChild(li);
   });
-  div.appendChild(ul);
-  container.appendChild(div);
+  card.appendChild(ul);
+  container.appendChild(card);
 }
 
 function renderMonthlySummary(container) {
@@ -804,34 +802,33 @@ function renderMonthlySummary(container) {
 
   if (sortedMonths.length === 0) return;
 
-  const div = document.createElement("div");
-  div.className = "border rounded p-3 bg-white";
+  const card = document.createElement("div");
+  card.className = "card card-body p-3 bg-white text-dark";
 
   const header = document.createElement('p');
-  header.className = "font-medium text-sm mb-2";
+  header.className = "fw-medium small mb-2";
   header.textContent = "Monthly Consistency";
-  div.appendChild(header);
+  card.appendChild(header);
 
   const ul = document.createElement('ul');
-  ul.className = "space-y-1";
+  ul.className = "list-unstyled mb-0 d-flex flex-column gap-1";
 
   sortedMonths.forEach(key => {
     // key is YYYY-MM
     const count = stats[key].size;
     const [year, month] = key.split('-');
     // Create date object to get localized month name.
-    // Note: using local time might shift dates, but month name should be fine if we set day to 15.
     const dateObj = new Date(parseInt(year), parseInt(month) - 1, 15);
     const monthName = dateObj.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
     const li = document.createElement('li');
-    li.className = "text-sm flex justify-between";
+    li.className = "small d-flex justify-content-between";
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = monthName;
 
     const countSpan = document.createElement('span');
-    countSpan.className = "font-medium";
+    countSpan.className = "fw-medium";
     countSpan.textContent = `${count} day${count === 1 ? '' : 's'}`;
 
     li.appendChild(nameSpan);
@@ -839,8 +836,8 @@ function renderMonthlySummary(container) {
     ul.appendChild(li);
   });
 
-  div.appendChild(ul);
-  container.appendChild(div);
+  card.appendChild(ul);
+  container.appendChild(card);
 }
 
 /* ================= UX ENHANCEMENTS ================= */
@@ -947,7 +944,8 @@ let notificationTime = localStorage.getItem("notificationTime") || "08:00";
 let lastNotificationDate = localStorage.getItem("lastNotificationDate") || "";
 
 function openSettings() {
-    settingsModal.classList.remove("hidden");
+    settingsModal.classList.remove("d-none");
+    settingsModal.classList.add("d-block");
     enableNotificationsCheckbox.checked = notificationsEnabled;
     notificationTimeInput.value = notificationTime;
     toggleTimeInput(notificationsEnabled);
@@ -966,24 +964,25 @@ function renderCustomThemesList() {
 
     const custom = JSON.parse(localStorage.getItem('customThemes') || '[]');
     if (custom.length === 0) {
-        list.innerHTML = '<p class="text-xs text-gray-600 italic">No custom themes added.</p>';
+        list.innerHTML = '<p class="small text-secondary fst-italic mb-0">No custom themes added.</p>';
         return;
     }
 
     custom.forEach((t, index) => {
         const item = document.createElement('div');
-        item.className = "flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200";
+        item.className = "d-flex align-items-center justify-content-between bg-light p-2 rounded border";
 
         const info = document.createElement('div');
-        info.className = "flex flex-col overflow-hidden";
+        info.className = "d-flex flex-column overflow-hidden pe-2";
         const name = document.createElement('span');
-        name.className = "text-xs font-medium text-gray-900 truncate";
+        name.className = "small fw-medium text-dark text-truncate";
         name.textContent = t.name;
         info.appendChild(name);
 
         if (t.scripture) {
             const script = document.createElement('span');
-            script.className = "text-[10px] text-gray-700 truncate";
+            script.className = "small text-secondary text-truncate";
+            script.style.fontSize = "0.75rem";
             script.textContent = t.scripture;
             info.appendChild(script);
         }
@@ -991,9 +990,9 @@ function renderCustomThemesList() {
         item.appendChild(info);
 
         const removeBtn = document.createElement('button');
-        removeBtn.className = "text-red-600 hover:text-red-800 p-1 flex-shrink-0";
+        removeBtn.className = "btn btn-link text-danger p-0 border-0 flex-shrink-0 shadow-none";
         removeBtn.setAttribute('aria-label', `Remove theme ${t.name}`);
-        removeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>';
+        removeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>';
         removeBtn.onclick = () => removeCustomTheme(index);
         item.appendChild(removeBtn);
 
@@ -1162,23 +1161,19 @@ async function mergeBackup(backupData) {
 
 
 function closeSettings() {
-    settingsModal.classList.add("hidden");
+    settingsModal.classList.add("d-none");
+    settingsModal.classList.remove("d-block");
     settingsModal.removeEventListener('keydown', trapFocusSettings);
     document.getElementById("settingsBtn").focus();
 }
 
 function toggleTimeInput(show) {
     if (show) {
-        timeSettingsDiv.classList.remove("hidden");
+        timeSettingsDiv.classList.remove("d-none");
     } else {
-        timeSettingsDiv.classList.add("hidden");
+        timeSettingsDiv.classList.add("d-none");
     }
 }
-
-// Reuse trap focus logic or create a specific one for settings if elements differ significantly.
-// But trapFocus relies on 'modal' variable which points to history modal.
-// I should duplicate or generalize trapFocus.
-// For now, I'll create a simple one for settings.
 
 function trapFocusSettings(e) {
   const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
@@ -1238,7 +1233,6 @@ document.getElementById("saveSettingsBtn").onclick = () => {
     closeSettings();
     announce("Settings saved.");
 
-    // Ask for permission if they enabled it but didn't trigger change event (e.g. was already enabled visually but permission revoked)
     if (notificationsEnabled && Notification.permission !== "granted") {
          Notification.requestPermission();
     }
@@ -1254,7 +1248,6 @@ setInterval(() => {
     const currentMinutes = String(now.getMinutes()).padStart(2, '0');
     const currentTime = `${currentHours}:${currentMinutes}`;
 
-    // Use local date string for "today" to match user's day
     const localTodayStr = getLocalISOString(now);
 
     if (currentTime === notificationTime && lastNotificationDate !== localTodayStr) {
@@ -1270,11 +1263,11 @@ setInterval(() => {
             console.error("Notification failed:", e);
         }
     }
-}, 30000); // Check every 30 seconds to be safe against drift
+}, 30000);
 
 // Also close settings on Escape
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !settingsModal.classList.contains("hidden")) {
+  if (e.key === "Escape" && !settingsModal.classList.contains("d-none")) {
     closeSettings();
   }
 });
