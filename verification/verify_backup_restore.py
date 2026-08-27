@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import time
+from urllib.parse import urlparse
 from playwright.async_api import async_playwright
 
 async def verify_backup_restore():
@@ -113,7 +114,8 @@ async def verify_backup_restore():
             async with page.expect_popup() as popup_info:
                 await page.click("#calendarBtn")
             popup = await popup_info.value
-            if "calendar.google.com" in popup.url or "accounts.google.com" in popup.url:
+            popup_host = (urlparse(popup.url).hostname or "").lower()
+            if popup_host in {"calendar.google.com", "accounts.google.com"}:
                 print("Verified Google Calendar integration still works")
             else:
                 print(f"Calendar check failed: {popup.url}")
