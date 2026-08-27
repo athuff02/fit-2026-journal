@@ -30,13 +30,10 @@ def verify_settings_ux():
                 # Let's fail fast for simplicity.
                 sys.exit(1)
 
-            # 2. Check class for contrast (text-gray-600)
+            # 2. Check class for contrast (text-secondary)
             classes = settings_btn.get_attribute("class")
-            if "text-gray-600" in classes:
-                print("SUCCESS: Settings button uses text-gray-600")
-            elif "text-gray-400" in classes:
-                print("FAILURE: Settings button still uses text-gray-400 (too light)")
-                sys.exit(1)
+            if "text-secondary" in classes:
+                print("SUCCESS: Settings button uses text-secondary")
             else:
                 print(f"FAILURE: Settings button has unexpected class: {classes}")
                 sys.exit(1)
@@ -48,11 +45,8 @@ def verify_settings_ux():
             helper_text = page.locator("#timeSettings p")
             helper_classes = helper_text.get_attribute("class")
 
-            if "text-gray-600" in helper_classes:
-                 print("SUCCESS: Helper text uses text-gray-600")
-            elif "text-gray-500" in helper_classes:
-                 print("FAILURE: Helper text still uses text-gray-500 (too light for small text)")
-                 sys.exit(1)
+            if "text-secondary" in helper_classes:
+                 print("SUCCESS: Helper text uses text-secondary")
             else:
                  print(f"FAILURE: Helper text has unexpected class: {helper_classes}")
                  sys.exit(1)

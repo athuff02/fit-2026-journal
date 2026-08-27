@@ -75,8 +75,7 @@ def test_chevron_affordance():
 
             # Check classes to ensure it matches our intended UX enhancements
             class_name = svg_icon.get_attribute("class")
-            assert "text-gray-600" in class_name, "Missing text-gray-600 class on SVG"
-            assert "group-hover:text-gray-900" in class_name, "Missing hover text class on SVG"
+            assert "text-secondary" in class_name, "Missing text-secondary class on SVG"
 
             print("SUCCESS: Chevron affordance verified!")
 

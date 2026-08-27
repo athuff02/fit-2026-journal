@@ -21,7 +21,7 @@ def verify_modal_close():
             print("Testing Settings Modal backdrop click...")
             page.click("#settingsBtn")
             # Wait for modal to be visible
-            page.wait_for_selector("#settingsModal:not(.hidden)")
+            page.wait_for_selector("#settingsModal:not(.d-none)")
 
             # Click the backdrop. (10, 10) is top-left corner.
             # We use mouse.click to ensure we click at specific coordinates where the backdrop is exposed.
@@ -54,7 +54,7 @@ def verify_modal_close():
             page.click("#historyTab")
             # Click the first entry
             page.click("#historyList button:first-child")
-            page.wait_for_selector("#modal:not(.hidden)")
+            page.wait_for_selector("#modal:not(.d-none)")
 
             print("Testing History Modal backdrop click...")
             # Click backdrop
