@@ -1,4 +1,4 @@
-# Vision 2026 Mindset Journal
+# Vision Mindset Journal
 
 This is a simple, offline-first journaling application designed to help you focus on your goals and personal growth. It's a progressive web app (PWA), so you can install it on your mobile device and use it like a native app.
 
